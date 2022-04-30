@@ -2,15 +2,23 @@ import asyncio
 import logging
 import os
 import threading
+import time
+from typing import Any, Union, Tuple
 
 import werkzeug
 from flask import Flask, jsonify, send_from_directory, redirect, request
 from flask.logging import default_handler
 from gevent.pywsgi import WSGIServer
 
+from helpers.crypt import HashDealer, TokenGenerator
+from helpers.db import Database, DeviceSession, User
+
+from helpers.exceptions import LoginMissingException, LoginIncorrectException, DuplicateSessionTokenException, \
+    SessionUnauthorizedException, SessionExpiredException
+
 
 class Page:
-    def __init__(self, path, get_func=None, post_func=None):
+    def __init__(self, path: str, get_func: Any = None, post_func: Any = None):
         self.path = path
         self.get_func = get_func
         self.post_func = post_func
@@ -37,7 +45,9 @@ class Page:
                     task = loop.create_task(self.map[request.method](*args, **kwargs))
                     res = loop.run_until_complete(task)
                     return res
+
             return _call
+
         if self.map:
             app.add_url_rule(rule=self.path,
                              endpoint=self.path,
@@ -45,22 +55,83 @@ class Page:
                              methods=self.map.keys())
 
 
+PERMISSIONS = [
+    'watcher',
+    'uploader',
+    'moderator',
+    'admin'
+]
+
+
 class WebServer(threading.Thread):
-    async def auth(self):
+    async def login(self) -> werkzeug.Response:
+        json = request.get_json()
+        if 'username' not in json or 'password' not in json:
+            raise LoginMissingException()
+
+        user = self.db.get_user_by_username(json['username'])
+        if user is None or not self.hash_dealer.verify_password(str(json['password']), str(user.password_hash)):
+            raise LoginIncorrectException()
+
+        while True:
+            try:
+                session_token = self.token_generator.generate()
+                if self.token_expires_days < 0:
+                    expires = -1
+                else:
+                    expires = int(time.time() + (60 * 60 * 24 * self.token_expires_days))
+                self.db.add_device_session(user.id, session_token, expires, request.user_agent.string)
+                break
+            except DuplicateSessionTokenException:
+                pass
+
+        return jsonify({
+            'msg': 'success',
+            'session_token': session_token,
+            'expires': expires
+        })
+
+    async def get_session(self) -> Tuple[DeviceSession, User]:
+        if 'Authorization' not in request.headers:
+            raise SessionUnauthorizedException()
+        session = self.db.get_device_session(request.headers['Authorization'], int(time.time()))
+        if session is None:
+            raise SessionExpiredException()
+        return session
+
+    async def logout(self) -> werkzeug.Response:
+        session = await self.get_session()
+        self.db.delete_device_session(session[0].session_token)
         return jsonify({
             'msg': 'success'
-        }), 200
+        })
+
+    def _add_user(self, username: str, password: str, permission: int, premium: bool):
+        self.db.add_user(username, self.hash_dealer.hash_password(password), permission, premium)
 
     def __init__(self,
-                 name='Webserver',
-                 host='0.0.0.0',
-                 port=4004,
-                 static_path=None,
-                 debug=False,
-                 logging_level=logging.WARNING,
-                 api_base='/fap'
+                 db: Database,
+                 hash_dealer: HashDealer = HashDealer(),
+                 token_generator: TokenGenerator = TokenGenerator(),
+                 token_expires_days: Union[int, float] = -1,
+                 name: str = 'Webserver',
+                 host: str = '0.0.0.0',
+                 port: int = 4004,
+                 static_path: str = None,
+                 debug: bool = False,
+                 logging_level: int = logging.WARNING,
+                 api_base: str = '/fap'
                  ):
         super().__init__()
+
+        self.db = db
+        self.hash_dealer = hash_dealer
+        self.token_generator = token_generator
+
+        self.token_expires_days = token_expires_days
+
+        if len(db.get_users()) == 0:
+            self._add_user('admin', 'admin', len(PERMISSIONS) - 1, True)
 
         self.HOST = host
         self.PORT = port
@@ -77,34 +148,37 @@ class WebServer(threading.Thread):
         self.app.logger.setLevel(logging_level)
 
         @self.app.errorhandler(Exception)
-        def handle_exception(e):
+        def handle_exception(e: Exception) -> werkzeug.Response:
             self.app.log_exception(e)
             if isinstance(e, werkzeug.exceptions.HTTPException):
-                return jsonify({
+                res = jsonify({
                     'code': e.code,
                     'name': e.name,
                     'description': e.description,
-                }), e.code
-
-            return jsonify({
+                })
+                res.status_code = e.code
+                return res
+            res = jsonify({
                 'code': 400,
                 'name': type(e).__name__,
                 'description': str(e),
-            }), 400
+            })
+            res.status_code = 400
+            return res
 
         if debug:
             @self.app.after_request
-            def after_request_func(response):
+            def after_request_func(response: werkzeug.Response) -> werkzeug.Response:
                 header = response.headers
                 header['Access-Control-Allow-Origin'] = '*'
                 header['Access-Control-Allow-Headers'] = '*'
                 header['Access-Control-Allow-Methods'] = '*'
                 return response
 
-        async def send_root():
+        async def send_root() -> werkzeug.Response:
             return send_from_directory(self.static_path, 'index.html')
 
-        async def static_file(path):
+        async def static_file(path: str) -> werkzeug.Response:
             p = os.path.join(self.static_path, path)
             if os.path.isdir(p):
                 if p[-1] != '/':
@@ -116,7 +190,8 @@ class WebServer(threading.Thread):
             return await send_root()
 
         pages = [
-            Page(path=f"{api_base}/auth", post_func=self.auth),
+            Page(path=f"{api_base}/login", post_func=self.login),
+            Page(path=f"{api_base}/logout", post_func=self.logout),
             Page(path='/<path:path>', get_func=static_file),
             Page(path='/', get_func=send_root),
         ]
@@ -138,6 +213,18 @@ def main():
     logging.basicConfig()
 
     ws = WebServer(
+        db=Database(GLOBAL_SETTINGS['DATABASE_URL']),
+        hash_dealer=HashDealer(
+            kdf_length=GLOBAL_SETTINGS['HASH_KDF_LENGTH'],
+            n_cost_factor=GLOBAL_SETTINGS['HASH_N_COST_FACTOR'],
+            r_block_size=GLOBAL_SETTINGS['HASH_R_BLOCK_SIZE'],
+            p_parallelization=GLOBAL_SETTINGS['HASH_P_PARALLELIZATION'],
+            salt_length=GLOBAL_SETTINGS['HASH_SALT_LENGTH']
+        ),
+        token_generator=TokenGenerator(
+            token_length=GLOBAL_SETTINGS['TOKEN_LENGTH']
+        ),
+        token_expires_days=GLOBAL_SETTINGS['TOKEN_EXPIRES_DAYS'],
         port=GLOBAL_SETTINGS['WEBSERVER_PORT'],
         static_path=GLOBAL_SETTINGS['WEBSERVER_STATIC_PATH'],
         debug=GLOBAL_SETTINGS['WEBSERVER_DEBUG'],

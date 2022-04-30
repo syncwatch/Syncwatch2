@@ -1,0 +1,12 @@
+/* Importing Variables SCSS file. */
+@import './variables.scss';
+
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
+
+/* Importing Bootswatch SCSS file. */
+@import './bootswatch.scss';
+
+html, body {
+    min-height: 100%;
+}
