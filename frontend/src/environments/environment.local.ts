@@ -1,5 +1,5 @@
 export const environment = {
     production: false,
-    api_base_url: '/fap',
-    mock_http: false,
+    api_base_url: 'about:now',
+    mock_http: true
 };

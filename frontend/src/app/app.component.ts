@@ -6,11 +6,12 @@ import { AuthService } from './shared/auth.service';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css']
+    styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
     title = 'syncwatch-frontend';
     isCollapsed = true;
+    logoutLoading = false;
 
     constructor(
         public authService: AuthService,
@@ -24,6 +25,7 @@ export class AppComponent {
     }
 
     logout() {
+        this.logoutLoading = true;
         this.authService.logout().pipe(
             catchError(err => {
                 this.router.navigate(['login']);

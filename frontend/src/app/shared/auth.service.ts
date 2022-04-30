@@ -5,11 +5,10 @@ import { catchError, shareReplay, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { Token } from './token';
+import { IAuthService } from './auth.service.interface';
 
-@Injectable({
-    providedIn: 'root'
-})
-export class AuthService {
+@Injectable()
+export class AuthService implements IAuthService {
     constructor(private http: HttpClient) {
     }
 
@@ -72,7 +71,7 @@ export class AuthService {
         return session_token;
     }
 
-    unload() {
+    unload(): void {
         if (this.getStaySignedin()) return;
         this.logout().subscribe(() => console.log('outlogged'));
         this.clearStorage();
