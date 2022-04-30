@@ -1,16 +1,17 @@
-<form class="container" [formGroup]="loginForm" (submit)="login()">
-    <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" formControlName="username" placeholder="Username">
-    </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" formControlName="password" placeholder="Password">
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-    <div class="form-group">
-        <input type="checkbox" name="stay_signedin" formControlName="stay_signedin" id="stay_signedin">
-        <label class="form-check-label" for="stay_signedin">Stay Signed In</label>
-    </div>
-    <div *ngIf="loading" class="spinner-border" role="status"></div>
-</form>
+<div class="jumbotron d-flex align-items-center min-vh-100">
+    <form class="container text-center" [formGroup]="loginForm" (submit)="login()" style="max-width: 400px;">
+        <app-logo class="logo-lg"></app-logo>
+        <div class="form-group mt-3">
+            <input type="text" class="form-control" id="username" formControlName="username" placeholder="Username">
+        </div>
+        <div class="form-group mt-3">
+            <input type="password " class="form-control" id="password" formControlName="password" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-primary mt-3 w-100">Login</button>
+        <div class="form-group mt-2">
+            <input type="checkbox" class="form-check-input" name="stay_signedin" formControlName="stay_signedin" id="stay_signedin">
+            <label class="form-check-label ms-2" for="stay_signedin">Stay Signed In</label>
+        </div>
+        <div *ngIf="loading" class="spinner-border" role="status"></div>
+    </form>
+</div>

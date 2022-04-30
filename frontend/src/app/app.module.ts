@@ -11,12 +11,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './shared/auth.service';
 import { AuthService as MockAuthService } from './shared/auth.mock.service';
+import { LogoComponent } from './components/logo/logo.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         LoginComponent,
         HomeComponent,
+        LogoComponent,
     ],
     imports: [
         BrowserModule,
