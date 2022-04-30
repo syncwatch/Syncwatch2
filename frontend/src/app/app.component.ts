@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
-import { AuthService } from './shared/auth.service';
+import { AuthService } from './shared/auth/auth.service';
 
 @Component({
     selector: 'app-root',

@@ -9,8 +9,8 @@ import { HomeComponent } from './pages/home/home.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { AuthService } from './shared/auth.service';
-import { AuthService as MockAuthService } from './shared/auth.mock.service';
+import { AuthService } from './shared/auth/auth.service';
+import { AuthService as MockAuthService } from './shared/auth/auth.mock.service';
 
 @NgModule({
     declarations: [
