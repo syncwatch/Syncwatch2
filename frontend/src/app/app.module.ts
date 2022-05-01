@@ -20,6 +20,11 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { ModalComponent } from './components/modal/modal.component';
 import { AuthGuardService } from './shared/auth/auth-guard.service';
 import { AuthGuardService as MockAuthGuardService } from './shared/auth/auth-guard.mock.service';
+import { DisplayService } from './shared/display/display.service';
+import { OnlineGuardService } from './shared/sync/online-guard.service';
+import { SyncService } from './shared/sync/sync.service';
+import { StorageService } from './shared/storage/storage.service';
+import { DownloadsComponent } from './pages/downloads/downloads.component';
 
 @NgModule({
     declarations: [
@@ -29,6 +34,7 @@ import { AuthGuardService as MockAuthGuardService } from './shared/auth/auth-gua
         ProfileComponent,
         LogoComponent,
         ModalComponent,
+        DownloadsComponent,
     ],
     imports: [
         BrowserModule,
@@ -50,6 +56,10 @@ import { AuthGuardService as MockAuthGuardService } from './shared/auth/auth-gua
             useClass: HttpInterceptorService,
             multi: true
         },
+        DisplayService,
+        OnlineGuardService,
+        SyncService,
+        StorageService,
         (environment.mock_http ? { provide: AuthService, useClass: MockAuthService } : AuthService),
         (environment.mock_http ? { provide: UserService, useClass: MockUserService } : UserService),
         (environment.deactivate_auth_guard ? { provide: AuthGuardService, useClass: MockAuthGuardService } : AuthGuardService),

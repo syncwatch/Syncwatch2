@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { fromEvent, Subject } from 'rxjs';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class SyncService {
     private voluntaryOffline = false;
     private networkOffline = false;

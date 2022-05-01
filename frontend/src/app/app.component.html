@@ -16,6 +16,7 @@
                 </li>
             </ul>
             <ul class="navbar-nav align-items-center">
+                <a class="nav-link" routerLinkActive="active" routerLink="/downloads">Downloads</a>
                 <a *ngIf="syncService.isOnline()" class="nav-link" routerLinkActive="active" routerLink="/profile">Profile</a>
                 <button *ngIf="syncService.isOnline()" class="btn btn-secondary" (click)="logout()" [disabled]="logoutLoading">
                     <span *ngIf="logoutLoading" class="spinner-border spinner-border-sm" role="status"></span>

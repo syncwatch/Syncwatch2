@@ -4,6 +4,7 @@ import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { catchError, filter, map, throwError } from 'rxjs';
 import { ModalComponent } from './components/modal/modal.component';
 import { AuthService } from './shared/auth/auth.service';
+import { StorageService } from './shared/storage/storage.service';
 import { SyncService } from './shared/sync/sync.service';
 
 @Component({
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     constructor(
         public authService: AuthService,
         public syncService: SyncService,
+        private storageService: StorageService,
         private router: Router,
         private swUpdate: SwUpdate
     ) { }
@@ -56,6 +58,18 @@ export class AppComponent implements OnInit, AfterViewInit {
                 }),
             );
         }
+
+        this.storageService.tryPersistWithoutPromtingUser().then(persist => {
+            if (persist == 'prompt') {
+                this.modal.open(`We want to store persistant data ok!`,
+                    'Store data',
+                    [
+                        { class: 'btn btn-secondary', innerHtml: 'Grant', result: 'grant' }
+                    ]).then((result) => {
+                        if (result == 'grant') this.storageService.persist();
+                    });
+            }
+        });
     }
 
     @HostListener("window:beforeunload", ["$event"])

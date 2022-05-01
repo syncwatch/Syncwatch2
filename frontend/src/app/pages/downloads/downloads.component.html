@@ -1,0 +1,4 @@
+<p *ngIf="!storageSupported else container">Storage not supported</p>
+<ng-template #container>
+    <p>Used {{storageUsage}} of {{storageQuota}}</p>
+</ng-template>
