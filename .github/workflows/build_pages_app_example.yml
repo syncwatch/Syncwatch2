@@ -27,7 +27,7 @@ jobs:
         cache-dependency-path: ./frontend/package-lock.json
     - name: npm install and build
       run: |
-        ci npm ci --include=dev
+        npm ci --include=dev
         ng build --configuration local --source-map false --service-worker true --base-href /Syncwatchv2/app/
       working-directory: ./frontend
     - name: Copy dist to webserver static
