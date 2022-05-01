@@ -16,3 +16,24 @@ body {
 body {
   overscroll-behavior-y: contain;
 }
+
+.m-safe {
+    margin-top: env(safe-area-inset-top);
+    margin-bottom: env(safe-area-inset-bottom);
+    margin-left: env(safe-area-inset-left);
+    margin-right: env(safe-area-inset-right);
+}
+
+.m-safe-t {
+    margin-top: env(safe-area-inset-top);
+}
+
+.m-safe-x {
+    margin-left: env(safe-area-inset-left);
+    margin-right: env(safe-area-inset-right);
+}
+
+.m-safe-y {
+    margin-top: env(safe-area-inset-top);
+    margin-bottom: env(safe-area-inset-bottom);
+}

@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DisplayService } from 'src/app/shared/display/display.service';
 
 @Component({
-  selector: 'app-overview',
-  templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.scss']
+    selector: 'app-overview',
+    templateUrl: './overview.component.html',
+    styleUrls: ['./overview.component.scss']
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent implements OnInit, OnDestroy {
 
-  constructor() { }
+    constructor(private displayService: DisplayService) { }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+        this.displayService.requestFullscreenMobile();
+    }
 
+    ngOnDestroy(): void {
+        this.displayService.exitFullscreen();
+    }
 }

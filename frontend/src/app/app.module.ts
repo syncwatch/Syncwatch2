@@ -18,6 +18,8 @@ import { HttpInterceptorService } from './shared/auth/http-interceptor.service';
 import { LogoComponent } from './components/logo/logo.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ModalComponent } from './components/modal/modal.component';
+import { AuthGuardService } from './shared/auth/auth-guard.service';
+import { AuthGuardService as MockAuthGuardService } from './shared/auth/auth-guard.mock.service';
 
 @NgModule({
     declarations: [
@@ -50,6 +52,7 @@ import { ModalComponent } from './components/modal/modal.component';
         },
         (environment.mock_http ? { provide: AuthService, useClass: MockAuthService } : AuthService),
         (environment.mock_http ? { provide: UserService, useClass: MockUserService } : UserService),
+        (environment.deactivate_auth_guard ? { provide: AuthGuardService, useClass: MockAuthGuardService } : AuthGuardService),
     ],
     bootstrap: [AppComponent]
 })
