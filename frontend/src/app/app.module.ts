@@ -17,6 +17,7 @@ import { UserService as MockUserService } from './shared/user/user.mock.service'
 import { HttpInterceptorService } from './shared/auth/http-interceptor.service';
 import { LogoComponent } from './components/logo/logo.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { ModalComponent } from './components/modal/modal.component';
 
 @NgModule({
     declarations: [
@@ -25,6 +26,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
         HomeComponent,
         ProfileComponent,
         LogoComponent,
+        ModalComponent,
     ],
     imports: [
         BrowserModule,

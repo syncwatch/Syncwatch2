@@ -1,0 +1,11 @@
+<ng-template #modalContent let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{_title}}</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body" [innerHTML]="_bodyHtml">
+    </div>
+    <div class="modal-footer">
+        <button *ngFor="let button of _buttons" type="button" [class]="button.class" (click)="modal.close(button.result)" [innerHTML]="button.innerHtml"></button>
+    </div>
+</ng-template>

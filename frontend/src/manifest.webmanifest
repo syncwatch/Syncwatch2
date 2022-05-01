@@ -3,7 +3,8 @@
     "short_name": "SW",
     "theme_color": "#ff0000",
     "background_color": "#00ff00",
-    "display": "standalone",
+    "display": "fullscreen",
+    "orientation": "any",
     "scope": "./",
     "start_url": "./",
     "icons": [

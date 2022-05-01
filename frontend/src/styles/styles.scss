@@ -11,3 +11,8 @@ html,
 body {
     min-height: 100%;
 }
+
+// fix for reloading fullscreen
+body {
+  overscroll-behavior-y: contain;
+}
