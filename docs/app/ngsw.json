@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1651434761067,
+  "timestamp": 1651439560007,
   "index": "/Syncwatchv2/app/index.html",
   "assetGroups": [
     {
@@ -57,13 +57,13 @@
     "/Syncwatchv2/app/assets/icons/icon-96x96.png": "dc6e7e0c9a61f052f24be89a50bad06820b5f422",
     "/Syncwatchv2/app/favicon.ico": "e83039d4bd34a1e8fe485c2364f137ef89113c3a",
     "/Syncwatchv2/app/index.html": "614365c655c6d0dadd8e25e88152bbdd3d4cb91c",
-    "/Syncwatchv2/app/main.js": "4aa8ce5cceb4556d5703f61e1f416ca2c1a20fbd",
+    "/Syncwatchv2/app/main.js": "25eebc7a41fa1a02aea607c972c30a92177aaeda",
     "/Syncwatchv2/app/manifest.webmanifest": "9a77d3ee00fede6a597bb2fd9ca93858e6cd6c21",
     "/Syncwatchv2/app/polyfills.js": "c337061c6f397f0735940eeda5e930a0e0902f69",
     "/Syncwatchv2/app/runtime.js": "d0e301fd441b6c7c8bd23dc4ad068563bc5b5e44",
-    "/Syncwatchv2/app/src_app_modules_movies_movies_module_ts.js": "54bfd304a4f83cf5750d487e25b6a5b8bb0d4935",
+    "/Syncwatchv2/app/src_app_modules_movies_movies_module_ts.js": "9bf52b10469dd69a1b35241c3d022bc66ca98b48",
     "/Syncwatchv2/app/styles.css": "1f7d395a15bbacd1fa0e0d2053ea6be36d03aa74",
-    "/Syncwatchv2/app/vendor.js": "13a9d4c6c91d9214606fae6b4d049d3a9c44c895"
+    "/Syncwatchv2/app/vendor.js": "f80a754c9c84bcc53bb4b0598e4b84a77005aba8"
   },
   "navigationUrls": [
     {
