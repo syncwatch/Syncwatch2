@@ -1,0 +1,17 @@
+.logo-image {
+    height: 3rem;
+}
+
+.logo-text {
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+:host(.logo-lg) .logo-image {
+    height: 4rem;
+}
+
+:host(.logo-lg) .logo-text {
+    font-weight: bold;
+    font-size: 3rem;
+}

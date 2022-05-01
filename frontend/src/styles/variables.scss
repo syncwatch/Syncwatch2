@@ -19,7 +19,13 @@ $gray-800: #343a40 !default;
 $gray-900: #170229 !default;
 $black:    #000 !default;
 
-$blue:    #1ba2f6 !default;
+$blue-200: #86E7FF !default;
+$blue-300: #3EDDFF !default;
+$blue-400: #3EAEFF !default;
+$blue-500: #3E7DFF !default;
+$blue-600: #3E47FF !default;
+
+$blue:    $blue-500 !default;
 $indigo:  #6610f2 !default;
 $purple:  #6f42c1 !default;
 $pink:    #ea39b8 !default;
@@ -30,8 +36,8 @@ $green:   #3cf281 !default;
 $teal:    #3f81a2 !default;
 $cyan:    #32fbe2 !default;
 
-$primary:       $purple !default;
-$secondary:     $pink !default;
+$primary:       $blue !default;
+$secondary:     $blue-300 !default;
 $success:       $green !default;
 $info:          $blue !default;
 $warning:       $yellow !default;
@@ -47,8 +53,8 @@ $min-contrast-ratio:   1.2 !default;
 
 // Body
 
-$body-bg:                   #1a0933 !default;
-$body-color:                $cyan !default;
+$body-bg:                   #141216 !default;
+$body-color:                $white !default;
 
 // Links
 
@@ -58,10 +64,10 @@ $link-color:                              $body-color !default;
 
 $border-width:                0 !default;
 
-$border-radius:               .15rem !default;
-$border-radius-sm:            .05rem !default;
+$border-radius:               .6rem !default;
+$border-radius-sm:            .25rem !default;
 
-$component-active-bg:         $pink !default;
+$component-active-bg:         $primary !default;
 
 // Fonts
 

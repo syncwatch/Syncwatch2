@@ -15,6 +15,7 @@ import { AuthService as MockAuthService } from './shared/auth/auth.mock.service'
 import { UserService } from './shared/user/user.service';
 import { UserService as MockUserService } from './shared/user/user.mock.service';
 import { HttpInterceptorService } from './shared/auth/http-interceptor.service';
+import { LogoComponent } from './components/logo/logo.component';
 
 @NgModule({
     declarations: [
@@ -22,6 +23,7 @@ import { HttpInterceptorService } from './shared/auth/http-interceptor.service';
         LoginComponent,
         HomeComponent,
         ProfileComponent,
+        LogoComponent,
     ],
     imports: [
         BrowserModule,
