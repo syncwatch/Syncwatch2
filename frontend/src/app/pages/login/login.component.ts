@@ -41,6 +41,11 @@ export class LoginComponent implements OnInit {
         if (this.authService.isLoggedIn() || !this.syncService.isOnline()) this.router.navigate(['home']);
     }
 
+    useOffline() {
+        this.syncService.setVoluntaryOffline(true);
+        this.router.navigate(['home']);
+    }
+
     login() {
         this.loginForm.markAllAsTouched();
         const val = this.loginForm.value;
@@ -59,7 +64,7 @@ export class LoginComponent implements OnInit {
                     return throwError(() => err);
                 })
             ).subscribe(() => {
-                    this.router.navigate(['home']);
+                this.router.navigate(['home']);
             });
     }
 }

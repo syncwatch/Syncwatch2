@@ -21,8 +21,8 @@
                     <span *ngIf="logoutLoading" class="spinner-border spinner-border-sm" role="status"></span>
                     Logout
                 </button>
-                <button *ngIf="!syncService.isOnline()" class="btn btn-secondary" disabled>
-                    Offline Mode
+                <button *ngIf="!syncService.isOnline()" class="btn btn-secondary" (click)="goOnline()" [disabled]="!syncService.isVoluntaryOffline()">
+                    Go Online
                 </button>
             </ul>
         </div>

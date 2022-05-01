@@ -63,6 +63,11 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.authService.unload();
     }
 
+    goOnline() {
+        this.syncService.setVoluntaryOffline(false);
+        this.router.navigate(['login']);
+    }
+
     logout() {
         this.logoutLoading = true;
         this.authService.logout().pipe(
