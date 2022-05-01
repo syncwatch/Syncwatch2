@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { AuthService } from 'src/app/shared/auth/auth.service';
+import { SyncService } from 'src/app/shared/sync/sync.service';
 
 @Component({
     selector: 'app-login',
@@ -17,7 +18,8 @@ export class LoginComponent implements OnInit {
 
     constructor(
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        public syncService: SyncService
     ) {
 
         this.loginForm = new FormGroup({
@@ -28,7 +30,7 @@ export class LoginComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (this.authService.isLoggedIn()) this.router.navigate(['home']);
+        if (this.authService.isLoggedIn() || !this.syncService.isOnline()) this.router.navigate(['home']);
     }
 
     login() {

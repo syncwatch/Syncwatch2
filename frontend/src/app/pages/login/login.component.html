@@ -1,5 +1,5 @@
-<div class="jumbotron d-flex align-items-center min-vh-100">
-    <form class="container m-safe text-center" [formGroup]="loginForm" (submit)="login()" style="max-width: 400px;">
+<div class="jumbotron d-flex align-items-center m-safe min-vh-100">
+    <form class="container text-center" [formGroup]="loginForm" (submit)="login()" style="max-width: 400px;">
         <app-logo class="logo-lg"></app-logo>
         <div class="form-group mt-3">
             <input type="text" class="form-control" id="username" formControlName="username" placeholder="Username">

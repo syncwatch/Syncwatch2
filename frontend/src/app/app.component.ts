@@ -4,6 +4,7 @@ import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { catchError, filter, map, throwError } from 'rxjs';
 import { ModalComponent } from './components/modal/modal.component';
 import { AuthService } from './shared/auth/auth.service';
+import { SyncService } from './shared/sync/sync.service';
 
 @Component({
     selector: 'app-root',
@@ -20,6 +21,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     constructor(
         public authService: AuthService,
+        public syncService: SyncService,
         private router: Router,
         private swUpdate: SwUpdate
     ) { }

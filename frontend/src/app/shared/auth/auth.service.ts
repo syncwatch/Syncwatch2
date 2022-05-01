@@ -6,10 +6,11 @@ import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { Token } from './token';
 import { IAuthService } from './auth.service.interface';
+import { SyncService } from '../sync/sync.service';
 
 @Injectable()
 export class AuthService implements IAuthService {
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private syncService: SyncService) {
     }
 
     private getStorage(): Storage {
@@ -40,6 +41,7 @@ export class AuthService implements IAuthService {
     }
 
     isLoggedIn(): boolean {
+        if (!this.syncService.isOnline()) return true;
         const exp = this.getExpiration();
         if (exp === undefined) return false;
         return exp === -1 || Math.floor(new Date().getTime() / 1000) < exp;
