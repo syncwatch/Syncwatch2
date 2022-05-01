@@ -1,6 +1,7 @@
 import logging
 
 import sqlalchemy as db
+from sqlalchemy.engine import Row
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship
@@ -11,7 +12,10 @@ from helpers.exceptions import DuplicateSessionTokenException
 
 class Representable:
     def __repr__(self) -> str:
-        return self._repr(**{k: v for k, v in self.__dict__.items() if not k.startswith('_')})
+        return self._repr(**self.to_dict())
+
+    def to_dict(self):
+        return {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
 
     def _repr(self, **fields: Dict[str, Any]) -> str:
         """
@@ -46,7 +50,8 @@ class User(Base):
 
 class DeviceSession(Base):
     __tablename__ = 'device_session'
-    session_token = db.Column(db.String, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    session_token = db.Column(db.String, unique=True)
     expires = db.Column(db.Integer, nullable=False)
     device_info = db.Column(db.String, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -94,7 +99,7 @@ class Database:
             session.rollback()
             raise DuplicateSessionTokenException()
 
-    def get_device_session(self, session_token: str, current_time: int) -> Optional[Tuple[DeviceSession, User]]:
+    def get_device_session(self, session_token: str, current_time: int) -> Optional[Row[DeviceSession, User]]:
         session = self.Session()
         stmt = session.query(DeviceSession, User).where(db.and_(
             DeviceSession.session_token == session_token,
@@ -102,7 +107,28 @@ class Database:
         )).join(User)
         return stmt.first()
 
+    def get_user_sessions(self, user_id: int, current_time: int) -> List[Row[int, str]]:
+        session = self.Session()
+        stmt = session.query(DeviceSession.id, DeviceSession.device_info).where(db.and_(
+            DeviceSession.user_id == user_id,
+            db.or_(DeviceSession.expires < 0, DeviceSession.expires > current_time)
+        )).join(User)
+        return stmt.all()
+
     def delete_device_session(self, session_token: str):
         session = self.Session()
         session.query(DeviceSession).filter(DeviceSession.session_token == session_token).delete()
+        session.commit()
+
+    def delete_user_session(self, user_id: int, session_id: int):
+        session = self.Session()
+        session.query(DeviceSession).filter(db.and_(
+            DeviceSession.user_id == user_id,
+            DeviceSession.id == session_id
+        )).delete()
+        session.commit()
+
+    def delete_user_sessions(self, user_id: int):
+        session = self.Session()
+        session.query(DeviceSession).filter(DeviceSession.user_id == user_id).delete()
         session.commit()

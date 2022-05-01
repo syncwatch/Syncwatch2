@@ -1,0 +1,17 @@
+<div>
+    <h4>Sessions</h4>
+    <div>
+        <button class="btn btn-danger" type="button" (click)="deleteSessions()">Delete All Sessions</button>
+    </div>
+    <ul class="list-group" *ngIf="device_sessions$ | async as sessions; else loading">
+        <li class="list-group-item" *ngFor="let session of sessions">
+            <span *ngIf="session.is_current">(current) </span>
+            {{ session.device_info }}
+            <button class="btn btn-danger" type="button" (click)="deleteSessionById(session.id, session.is_current)">Delete</button>
+        </li>
+    </ul>
+    <ng-template #loading>
+        <div class="spinner-border" role="status">
+        </div>
+    </ng-template>
+</div>

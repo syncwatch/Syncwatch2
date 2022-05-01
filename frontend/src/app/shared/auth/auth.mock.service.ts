@@ -31,6 +31,10 @@ export class AuthService implements IAuthService {
         return this._loggedIn;
     }
 
+    getSessionToken(): string {
+        return "123";
+    }
+
     unload(): void {
     }
 }

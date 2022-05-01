@@ -13,10 +13,13 @@
                 <a class="nav-link" routerLinkActive="active" routerLink="/movies">Movies</a>
             </li>
         </ul>
-        <button class="btn btn-secondary" (click)="logout()">
-            <span *ngIf="logoutLoading" class="spinner-border spinner-border-sm" role="status"></span>
-            Logout
-        </button>
+        <ul class="navbar-nav">
+            <a class="nav-link" routerLinkActive="active" routerLink="/profile">Profile</a>
+            <button class="btn btn-secondary" (click)="logout()">
+                <span *ngIf="logoutLoading" class="spinner-border spinner-border-sm" role="status"></span>
+                Logout
+            </button>
+        </ul>
     </div>
 </nav>
 <router-outlet></router-outlet>

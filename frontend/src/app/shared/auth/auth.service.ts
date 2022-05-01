@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, shareReplay, tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
@@ -19,7 +19,6 @@ export class AuthService implements IAuthService {
     login(username: string, password: string, stay_signedin: boolean): Observable<Token> {
         return this.http.post<Token>(environment.api_base_url + '/login', { username, password }).pipe(
             tap((res: Token) => this.setSession(res, stay_signedin)),
-            shareReplay()
         );
     }
 
@@ -37,7 +36,6 @@ export class AuthService implements IAuthService {
                     return throwError(() => err);
                 }),
                 tap(() => this.clearStorage()),
-                shareReplay()
             );
     }
 
@@ -48,7 +46,6 @@ export class AuthService implements IAuthService {
     }
 
     private setSession(authResult: Token, stay_signedin: boolean) {
-        console.log(authResult);
         localStorage.setItem('stay_signedin', (stay_signedin ? '1' : '0'));
         this.getStorage().setItem('session_token', authResult.session_token);
         this.getStorage().setItem('session_expires', JSON.stringify(authResult.expires));
@@ -65,7 +62,7 @@ export class AuthService implements IAuthService {
         return stay_signedin === '1';
     }
 
-    private getSessionToken(): string {
+    getSessionToken(): string {
         const session_token = this.getStorage().getItem("session_token");
         if (session_token === null) return '';
         return session_token;
@@ -77,7 +74,7 @@ export class AuthService implements IAuthService {
         this.clearStorage();
     }
 
-    private clearStorage() {
+    clearStorage() {
         this.getStorage().removeItem('session_token');
         this.getStorage().removeItem('session_expires');
         localStorage.removeItem("stay_signedin");

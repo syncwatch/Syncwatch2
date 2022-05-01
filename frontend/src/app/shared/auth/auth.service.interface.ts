@@ -9,5 +9,7 @@ export interface IAuthService {
 
     isLoggedIn(): boolean;
 
+    getSessionToken(): string;
+
     unload(): void;
 }

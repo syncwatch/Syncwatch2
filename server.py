@@ -3,18 +3,20 @@ import logging
 import os
 import threading
 import time
-from typing import Any, Union, Tuple
+from typing import Any, Union
 
 import werkzeug
 from flask import Flask, jsonify, send_from_directory, redirect, request
 from flask.logging import default_handler
 from gevent.pywsgi import WSGIServer
+from sqlalchemy.engine import Row
 
 from helpers.crypt import HashDealer, TokenGenerator
 from helpers.db import Database, DeviceSession, User
 
 from helpers.exceptions import LoginMissingException, LoginIncorrectException, DuplicateSessionTokenException, \
     SessionUnauthorizedException, SessionExpiredException
+from helpers.json_encode import create_json_encoder
 
 
 class Page:
@@ -80,7 +82,10 @@ class WebServer(threading.Thread):
                     expires = -1
                 else:
                     expires = int(time.time() + (60 * 60 * 24 * self.token_expires_days))
-                self.db.add_device_session(user.id, session_token, expires, request.user_agent.string)
+                self.db.add_device_session(user.id, session_token, expires, '{} {}'.format(
+                    request.user_agent.platform,
+                    request.user_agent.browser
+                ))
                 break
             except DuplicateSessionTokenException:
                 pass
@@ -91,7 +96,7 @@ class WebServer(threading.Thread):
             'expires': expires
         })
 
-    async def get_session(self) -> Tuple[DeviceSession, User]:
+    async def get_session(self) -> Row[DeviceSession, User]:
         if 'Authorization' not in request.headers:
             raise SessionUnauthorizedException()
         session = self.db.get_device_session(request.headers['Authorization'], int(time.time()))
@@ -99,9 +104,37 @@ class WebServer(threading.Thread):
             raise SessionExpiredException()
         return session
 
+    async def auth(self) -> werkzeug.Response:
+        await self.get_session()
+        return jsonify({
+            'msg': 'success'
+        })
+
     async def logout(self) -> werkzeug.Response:
         session = await self.get_session()
         self.db.delete_device_session(session[0].session_token)
+        return jsonify({
+            'msg': 'success'
+        })
+
+    async def get_user_sessions(self) -> werkzeug.Response:
+        session = await self.get_session()
+
+        def _map(x: Row[int, str]):
+            return {'id': x.id, 'device_info': x.device_info, 'is_current': session[0].id == x.id}
+
+        return jsonify({
+            'msg': 'success',
+            'sessions': list(map(_map, self.db.get_user_sessions(session[0].user_id, int(time.time()))))
+        })
+
+    async def delete_user_sessions(self) -> werkzeug.Response:
+        session = await self.get_session()
+        json = request.get_json()
+        if 'session_id' in json:
+            self.db.delete_user_session(session[0].user_id, int(json['session_id']))
+        else:
+            self.db.delete_user_sessions(session[0].user_id)
         return jsonify({
             'msg': 'success'
         })
@@ -142,6 +175,8 @@ class WebServer(threading.Thread):
             name,
             root_path=self.root_path,
         )
+        self.app.json_encoder = create_json_encoder()
+
         self.app.debug = debug
 
         self.app.logger.removeHandler(default_handler)
@@ -191,7 +226,10 @@ class WebServer(threading.Thread):
 
         pages = [
             Page(path=f"{api_base}/login", post_func=self.login),
+            Page(path=f"{api_base}/auth", post_func=self.auth),
             Page(path=f"{api_base}/logout", post_func=self.logout),
+            Page(path=f"{api_base}/sessions", get_func=self.get_user_sessions),
+            Page(path=f"{api_base}/delete-sessions", post_func=self.delete_user_sessions),
             Page(path='/<path:path>', get_func=static_file),
             Page(path='/', get_func=send_root),
         ]

@@ -29,9 +29,11 @@ export class AppComponent {
         this.authService.logout().pipe(
             catchError(err => {
                 this.router.navigate(['login']);
+                this.logoutLoading = false;
                 return throwError(() => err);
             }),
         ).subscribe(() => {
+            this.logoutLoading = false;
             this.router.navigate(['login']);
         });
     }
