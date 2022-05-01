@@ -28,7 +28,7 @@ jobs:
     - name: npm install and build
       run: |
         npm install esbuild
-        npm ci
+        npm i
         npx ng build --configuration local --source-map false --service-worker true --base-href /Syncwatchv2/app/
       working-directory: ./frontend
     - name: Copy dist to webserver static
