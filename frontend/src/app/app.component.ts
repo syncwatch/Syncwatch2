@@ -1,6 +1,7 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
+import { catchError, filter, map, throwError } from 'rxjs';
 import { AuthService } from './shared/auth/auth.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { AuthService } from './shared/auth/auth.service';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     title = 'syncwatch-frontend';
     isCollapsed = true;
     logoutLoading = false;
@@ -16,7 +17,19 @@ export class AppComponent {
     constructor(
         public authService: AuthService,
         private router: Router,
+        private swUpdate: SwUpdate
     ) {
+    }
+    ngOnInit(): void {
+        if (this.swUpdate.isEnabled) {
+            this.swUpdate.versionUpdates.pipe(
+                filter((evt: any): evt is VersionReadyEvent => evt.type === 'VERSION_READY'),
+                map((evt: any) => {
+                    console.info(`updating version=[${evt.currentVersion} to latestVersion=[${evt.latestVersion}]`);
+                    window.location.reload();
+                }),
+            );
+        }
     }
 
     @HostListener("window:beforeunload", ["$event"])

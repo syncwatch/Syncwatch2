@@ -16,6 +16,7 @@ import { UserService } from './shared/user/user.service';
 import { UserService as MockUserService } from './shared/user/user.mock.service';
 import { HttpInterceptorService } from './shared/auth/http-interceptor.service';
 import { LogoComponent } from './components/logo/logo.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
     declarations: [
@@ -32,6 +33,12 @@ import { LogoComponent } from './components/logo/logo.component';
         ReactiveFormsModule,
         HttpClientModule,
         NgbModule,
+        ServiceWorkerModule.register('ngsw-worker.js', {
+          enabled: true,
+          // Register the ServiceWorker as soon as the application is stable
+          // or after 30 seconds (whichever comes first).
+          registrationStrategy: 'registerWhenStable:30000'
+        }),
     ],
     providers: [
         {
