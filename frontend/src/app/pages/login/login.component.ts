@@ -48,7 +48,6 @@ export class LoginComponent implements OnInit {
                     return throwError(() => err);
                 })
             ).subscribe(() => {
-                    console.log("User is logged in");
                     this.router.navigate(['home']);
             });
     }

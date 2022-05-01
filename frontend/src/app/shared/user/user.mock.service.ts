@@ -9,7 +9,7 @@ export class UserService implements IUserService {
         {
             id: 1,
             device_info: 'My Device',
-            is_current: false,
+            is_current: true,
         },
         {
             id: 2,

@@ -70,7 +70,7 @@ export class AuthService implements IAuthService {
 
     unload(): void {
         if (this.getStaySignedin()) return;
-        this.logout().subscribe(() => console.log('outlogged'));
+        this.logout().subscribe();
         this.clearStorage();
     }
 
