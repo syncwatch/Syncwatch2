@@ -29,11 +29,20 @@ export class LoginComponent implements OnInit {
         });
     }
 
+    get username(): FormControl {
+        return <FormControl>this.loginForm.get('username');
+    }
+
+    get password(): FormControl {
+        return <FormControl>this.loginForm.get('password');
+    }
+
     ngOnInit(): void {
         if (this.authService.isLoggedIn() || !this.syncService.isOnline()) this.router.navigate(['home']);
     }
 
     login() {
+        this.loginForm.markAllAsTouched();
         const val = this.loginForm.value;
 
         if (this.loginForm.invalid) {
