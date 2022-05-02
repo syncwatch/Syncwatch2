@@ -39,4 +39,4 @@ jobs:
       run: |
         git config --global user.name "Syncwatch Runner"
         git add --force ./docs/app
-        git diff-index --quiet HEAD || git commit -am "Automated pages app build" && git push
+        git diff-index --quiet HEAD || git commit -m "Automated pages app build" && git push
