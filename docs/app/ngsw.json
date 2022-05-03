@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1651512895508,
+  "timestamp": 1651581270110,
   "index": "/Syncwatchv2/app/index.html",
   "assetGroups": [
     {
@@ -55,7 +55,7 @@
     "/Syncwatchv2/app/assets/icons/icon-96x96.png": "dc6e7e0c9a61f052f24be89a50bad06820b5f422",
     "/Syncwatchv2/app/favicon.ico": "e83039d4bd34a1e8fe485c2364f137ef89113c3a",
     "/Syncwatchv2/app/index.html": "afebaeaabb4486f6ae6f4895f4c9d89bbb36b3dd",
-    "/Syncwatchv2/app/main.js": "1bf530e523473cb4c7d983297d17b6cde210e3e9",
+    "/Syncwatchv2/app/main.js": "36a188d96b30126b7655f9d960561247e2f2ba80",
     "/Syncwatchv2/app/manifest.webmanifest": "9a77d3ee00fede6a597bb2fd9ca93858e6cd6c21",
     "/Syncwatchv2/app/polyfills.js": "5398e75a1fd52f6f63d50d33bb20bcc9cd386e3c",
     "/Syncwatchv2/app/runtime.js": "397530730c704c2efa08e762fc5ed9b2909bb63c",
