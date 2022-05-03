@@ -1,4 +1,4 @@
-# Syncwatchv2
+# Syncwatch2
  
 ## Settings
 - DATABASE_URL
