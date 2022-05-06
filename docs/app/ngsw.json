@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1651581589511,
+  "timestamp": 1651879274194,
   "index": "/Syncwatch2/app/index.html",
   "assetGroups": [
     {
@@ -11,12 +11,16 @@
         "ignoreVary": true
       },
       "urls": [
+        "/Syncwatch2/app/default-src_app_shared_worker_db_ts-node_modules_babel_runtime_helpers_esm_asyncToGenerator_js.js",
         "/Syncwatch2/app/favicon.ico",
         "/Syncwatch2/app/index.html",
         "/Syncwatch2/app/main.js",
         "/Syncwatch2/app/manifest.webmanifest",
         "/Syncwatch2/app/polyfills.js",
         "/Syncwatch2/app/runtime.js",
+        "/Syncwatch2/app/src_app_modules_upload_upload_module_ts.js",
+        "/Syncwatch2/app/src_app_shared_worker_indexeddb_worker_ts.js",
+        "/Syncwatch2/app/src_app_shared_worker_service_worker_ts.js",
         "/Syncwatch2/app/styles.css"
       ],
       "patterns": []
@@ -29,6 +33,7 @@
         "ignoreVary": true
       },
       "urls": [
+        "/Syncwatch2/app/assets/default-thumbnail.svg",
         "/Syncwatch2/app/assets/icons/icon-128x128.png",
         "/Syncwatch2/app/assets/icons/icon-144x144.png",
         "/Syncwatch2/app/assets/icons/icon-152x152.png",
@@ -44,6 +49,7 @@
   ],
   "dataGroups": [],
   "hashTable": {
+    "/Syncwatch2/app/assets/default-thumbnail.svg": "cce5c02f7384f683f989cca16ae490225a9e0102",
     "/Syncwatch2/app/assets/icons/icon-128x128.png": "1a312cde517f881136b4316b290cfb6d995d1e4b",
     "/Syncwatch2/app/assets/icons/icon-144x144.png": "96ddd3205a59e0703d84a28bea910d913c65c146",
     "/Syncwatch2/app/assets/icons/icon-152x152.png": "1ccaf981e022b86cc41d517b40c2622b1682fe62",
@@ -53,13 +59,17 @@
     "/Syncwatch2/app/assets/icons/icon-512x512.png": "eda1a9ddbaf56e8d98067ee9ee2ac9a15990b27c",
     "/Syncwatch2/app/assets/icons/icon-72x72.png": "0498aa1980a12e5fd2ab1fab630144644eb7c82d",
     "/Syncwatch2/app/assets/icons/icon-96x96.png": "dc6e7e0c9a61f052f24be89a50bad06820b5f422",
+    "/Syncwatch2/app/default-src_app_shared_worker_db_ts-node_modules_babel_runtime_helpers_esm_asyncToGenerator_js.js": "5768f4ce90d778ea20e9e96de1ed4b2314084450",
     "/Syncwatch2/app/favicon.ico": "e83039d4bd34a1e8fe485c2364f137ef89113c3a",
-    "/Syncwatch2/app/index.html": "945773a17604301e9815616ec7c7d3b83323b115",
-    "/Syncwatch2/app/main.js": "36a188d96b30126b7655f9d960561247e2f2ba80",
+    "/Syncwatch2/app/index.html": "429c6ce9313805898e1172599c0db65927f37aac",
+    "/Syncwatch2/app/main.js": "78c3321d93daa3296096d38eec8c698692f61fb4",
     "/Syncwatch2/app/manifest.webmanifest": "9a77d3ee00fede6a597bb2fd9ca93858e6cd6c21",
-    "/Syncwatch2/app/polyfills.js": "5398e75a1fd52f6f63d50d33bb20bcc9cd386e3c",
-    "/Syncwatch2/app/runtime.js": "397530730c704c2efa08e762fc5ed9b2909bb63c",
-    "/Syncwatch2/app/styles.css": "7fc5581cfedf5c218d8d37bed08e82e09e2ec3d2"
+    "/Syncwatch2/app/polyfills.js": "994aeb11446b3f6c5bbdf54292ea937e836fcda8",
+    "/Syncwatch2/app/runtime.js": "25fccc72bd5252e5e123553a2185baabcca54865",
+    "/Syncwatch2/app/src_app_modules_upload_upload_module_ts.js": "7db44381a028c86fef4f2119e05c0414fb8ee8a0",
+    "/Syncwatch2/app/src_app_shared_worker_indexeddb_worker_ts.js": "0d25727df121e3f1284ac57de01d6af54a289392",
+    "/Syncwatch2/app/src_app_shared_worker_service_worker_ts.js": "d219665fb64efa4daa0b22f2b2495287140ee058",
+    "/Syncwatch2/app/styles.css": "b9d6cde28946a322ae5e7857d4459a67e286fd22"
   },
   "navigationUrls": [
     {
