@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Route, Router } from '@angular/router';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { catchError, filter, map, throwError } from 'rxjs';
 import { ModalComponent } from './components/modal/modal.component';
@@ -7,10 +7,16 @@ import { AuthService } from './shared/auth/auth.service';
 import { StorageService } from './shared/storage/storage.service';
 import { SyncService } from './shared/sync/sync.service';
 
+export interface NavRoute {
+    path: string;
+    title: string;
+}
+
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, AfterViewInit {
     title = 'syncwatch-frontend';
@@ -20,13 +26,23 @@ export class AppComponent implements OnInit, AfterViewInit {
     @ViewChild('modal')
     modal!: ModalComponent;
 
+    navStartRoutes!: NavRoute[];
+    navEndRoutes!: NavRoute[];
+
     constructor(
         public authService: AuthService,
         public syncService: SyncService,
         private storageService: StorageService,
         private router: Router,
         private swUpdate: SwUpdate
-    ) { }
+    ) {
+        this.reloadNavRoutes();
+    }
+
+    private reloadNavRoutes() {
+        this.navStartRoutes = this.router.config.filter(route => route.data && route.data['navTitle'] && !route.data['navEnd']).map<{ path: string, title: string }>(route => { return { path: '/' + route.path, title: '' + route.data!['navTitle'] }; });
+        this.navEndRoutes = this.router.config.filter(route => route.data && route.data['navTitle'] && route.data['navEnd']).map<{ path: string, title: string }>(route => { return { path: '/' + route.path, title: '' + route.data!['navTitle'] }; });
+    }
 
     ngOnInit(): void {
     }

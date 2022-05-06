@@ -7,6 +7,9 @@
 /* Importing Bootswatch SCSS file. */
 @import './bootswatch.scss';
 
+/* Import video js file */
+@import '~video.js/dist/video-js.min.css';
+
 html,
 body {
     min-height: 100%;
@@ -14,7 +17,24 @@ body {
 
 // fix for reloading fullscreen
 body {
-  overscroll-behavior-y: contain;
+    overscroll-behavior-y: contain;
+}
+
+// fix fullscreen scroll
+body:fullscreen {
+    overflow: scroll !important;
+}
+
+body:-ms-fullscreen {
+    overflow: scroll !important;
+}
+
+body:-webkit-full-screen {
+    overflow: scroll !important;
+}
+
+body:-moz-full-screen {
+    overflow: scroll !important;
 }
 
 .m-safe {

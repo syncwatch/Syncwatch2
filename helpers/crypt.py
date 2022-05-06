@@ -4,6 +4,8 @@ from cryptography.exceptions import InvalidKey
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 import secrets
 
+from hashlib import md5
+
 
 class TokenGenerator:
     def __init__(self, token_length=32):
@@ -11,6 +13,24 @@ class TokenGenerator:
 
     def generate(self) -> str:
         return secrets.token_urlsafe(self.token_length)
+
+
+def hash_string(s: str) -> str:
+    h = md5()
+    h.update(s.encode('utf-8'))
+    return h.hexdigest()
+
+
+def hash_file(file_path: str, buffer_size: int = 65536) -> str:
+    h = md5()
+    with open(file_path, 'rb') as f:
+        while True:
+            data = f.read(buffer_size)
+            if not data:
+                break
+            h.update(data)
+
+    return h.hexdigest()
 
 
 class HashDealer:

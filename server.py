@@ -12,11 +12,12 @@ from gevent.pywsgi import WSGIServer
 from sqlalchemy.engine import Row
 
 from helpers.crypt import HashDealer, TokenGenerator
+from helpers.data_manager import DataManager
 from helpers.db import Database, DeviceSession, User
 
 from helpers.exceptions import LoginMissingException, LoginIncorrectException, DuplicateSessionTokenException, \
-    SessionUnauthorizedException, SessionExpiredException
-from helpers.json_encode import create_json_encoder
+    SessionUnauthorizedException, SessionExpiredException, MovieIdMissingException, ThumbnailIdMissingException
+from helpers.json_encoder import create_json_encoder
 
 
 class Page:
@@ -96,6 +97,14 @@ class WebServer(threading.Thread):
             'expires': expires
         })
 
+    async def get_session_by_arg(self, session_arg: str = 'token'):
+        if session_arg not in request.args:
+            raise SessionUnauthorizedException()
+        session = self.db.get_device_session(request.args[session_arg], int(time.time()))
+        if session is None:
+            raise SessionExpiredException()
+        return session
+
     async def get_session(self) -> Row[DeviceSession, User]:
         if 'Authorization' not in request.headers:
             raise SessionUnauthorizedException()
@@ -139,11 +148,40 @@ class WebServer(threading.Thread):
             'msg': 'success'
         })
 
+    async def movies(self) -> werkzeug.Response:
+        session = await self.get_session()
+        return jsonify({
+            'msg': 'success',
+            'movies': self.data_manager.movie.get_movies_meta()
+        })
+
+    async def movie(self) -> werkzeug.Response:
+        session = await self.get_session()
+        if 'id' not in request.args:
+            raise MovieIdMissingException()
+        return jsonify({
+            'msg': 'success',
+            'movie': self.data_manager.movie.get_movie_meta_by_id(request.args['id'])
+        })
+
+    async def stream(self) -> werkzeug.Response:
+        session = await self.get_session_by_arg()
+        if 'id' not in request.args:
+            raise MovieIdMissingException()
+        return self.data_manager.movie.stream_movie(request.args['id'])
+
+    async def thumbnail(self):
+        session = await self.get_session_by_arg()
+        if 'id' not in request.args:
+            raise ThumbnailIdMissingException()
+        return self.data_manager.movie.get_thumbnail(request.args['id'])
+
     def _add_user(self, username: str, password: str, permission: int, premium: bool):
         self.db.add_user(username, self.hash_dealer.hash_password(password), permission, premium)
 
     def __init__(self,
-                 db: Database,
+                 data_path: str = None,
+                 db: Database = None,
                  hash_dealer: HashDealer = HashDealer(),
                  token_generator: TokenGenerator = TokenGenerator(),
                  token_expires_days: Union[int, float] = -1,
@@ -158,6 +196,7 @@ class WebServer(threading.Thread):
         super().__init__()
 
         self.db = db
+        self.data_manager = DataManager(data_path)
         self.hash_dealer = hash_dealer
         self.token_generator = token_generator
 
@@ -181,6 +220,8 @@ class WebServer(threading.Thread):
 
         self.app.logger.removeHandler(default_handler)
         self.app.logger.setLevel(logging_level)
+
+        self.data_manager.initialize(self.db, self.app.logger)
 
         @self.app.errorhandler(Exception)
         def handle_exception(e: Exception) -> werkzeug.Response:
@@ -230,6 +271,10 @@ class WebServer(threading.Thread):
             Page(path=f"{api_base}/logout", post_func=self.logout),
             Page(path=f"{api_base}/sessions", get_func=self.get_user_sessions),
             Page(path=f"{api_base}/delete-sessions", post_func=self.delete_user_sessions),
+            Page(path=f"{api_base}/movie", get_func=self.movie),
+            Page(path=f"{api_base}/movies", get_func=self.movies),
+            Page(path=f"{api_base}/thumbnail", get_func=self.thumbnail),
+            Page(path=f"{api_base}/stream", get_func=self.stream),
             Page(path='/<path:path>', get_func=static_file),
             Page(path='/', get_func=send_root),
         ]
@@ -251,6 +296,7 @@ def main():
     logging.basicConfig()
 
     ws = WebServer(
+        data_path=GLOBAL_SETTINGS['DATA_PATH'],
         db=Database(GLOBAL_SETTINGS['DATABASE_URL']),
         hash_dealer=HashDealer(
             kdf_length=GLOBAL_SETTINGS['HASH_KDF_LENGTH'],
@@ -266,7 +312,8 @@ def main():
         port=GLOBAL_SETTINGS['WEBSERVER_PORT'],
         static_path=GLOBAL_SETTINGS['WEBSERVER_STATIC_PATH'],
         debug=GLOBAL_SETTINGS['WEBSERVER_DEBUG'],
-        logging_level=GLOBAL_SETTINGS['WEBSERVER_LOGGING_LEVEL']
+        logging_level=GLOBAL_SETTINGS['WEBSERVER_LOGGING_LEVEL'],
+        api_base=GLOBAL_SETTINGS['API_BASE'],
     )
     ws.run()
 

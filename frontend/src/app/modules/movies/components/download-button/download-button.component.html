@@ -1,0 +1,25 @@
+<div *ngIf="downloadProgress$ | async as progress">
+    {{ progress | json }}
+    Speed: {{ downloadSpeed$ | async }}
+    <ng-container *ngIf="progress.deleting else download">
+        Deleting...
+    </ng-container>
+    <ng-template #download>
+        <button *ngIf="!progress.downloading && progress.downloaded == 0"
+            type="button" class="btn btn-primary" (click)="triggerDownload()">
+            Download
+        </button>
+        <button *ngIf="progress.downloading"
+            type="button" class="btn btn-primary" (click)="triggerDownload()">
+            Pause
+        </button>
+        <button *ngIf="!progress.downloading && progress.downloaded > 0 && progress.downloaded < 1"
+            type="button" class="btn btn-primary" (click)="triggerDownload()">
+            Continue
+        </button>
+        <button *ngIf="!progress.downloading && progress.downloaded > 0"
+            type="button" class="btn btn-primary" (click)="deleteDownload()">
+            Delete
+        </button>
+    </ng-template>
+</div>

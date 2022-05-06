@@ -9,6 +9,8 @@ def is_number(value):
 def validate_global_settings(settings: Dict):
     current_dir = os.path.dirname(os.path.realpath(__file__))
 
+    if 'API_BASE' not in settings or not isinstance(settings['API_BASE'], str):
+        settings['API_BASE'] = '/fap'
     if 'WEBSERVER_DEBUG' not in settings or not settings['WEBSERVER_DEBUG']:
         settings['WEBSERVER_DEBUG'] = False
     if 'WEBSERVER_STATIC_PATH' not in settings or not isinstance(settings['WEBSERVER_STATIC_PATH'], str):
@@ -31,4 +33,6 @@ def validate_global_settings(settings: Dict):
         settings['HASH_SALT_LENGTH'] = 16
     if 'TOKEN_EXPIRES_DAYS' not in settings or not is_number(settings['TOKEN_EXPIRES_DAYS']):
         settings['TOKEN_EXPIRES_DAYS'] = -1
+    if 'DATA_PATH' not in settings or not isinstance(settings['DATA_PATH'], str):
+        settings['DATA_PATH'] = None
     return settings

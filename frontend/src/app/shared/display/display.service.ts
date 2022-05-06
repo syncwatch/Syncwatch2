@@ -6,8 +6,34 @@ export class DisplayService {
 
     constructor(private deviceService: DeviceDetectorService) { }
 
+    lockOrientation(orientation: OrientationLockType) {
+        const s = (<any>screen);
+        if (s.orientation) {
+            s.orientation.lock(orientation);
+        } else if (s.lockOrientation) {
+            s.lockOrientation(orientation);
+        } else if (s.mozLockOrientation) {
+            s.mozLockOrientation(orientation);
+        } else if (s.msLockOrientation) {
+            s.msLockOrientation(orientation);
+        }
+    }
+
+    unlockOrientation() {
+        const s = (<any>screen);
+        if (s.orientation) {
+            s.orientation.unlock();
+        } else if (s.lockOrientation) {
+            s.unlockOrientation();
+        } else if (s.mozLockOrientation) {
+            s.mozUnlockOrientation();
+        } else if (s.msLockOrientation) {
+            s.msUnlockOrientation();
+        }
+    }
+
     requestFullscreenMobile() {
-        if (this.deviceService.isMobile()) this.requestFullscreen();
+        if (!this.deviceService.isDesktop()) this.requestFullscreen();
     }
 
     requestFullscreen() {

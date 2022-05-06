@@ -1,0 +1,9 @@
+<div *ngIf="movie.id" class="card text-white bg-secondary" style="width: 18rem;">
+    <img class="card-img-top" [src]="thumbnailSrc">
+    <div class="card-body">
+        <h5 class="card-title">{{movie.title}}</h5>
+        <p>{{readableSize()}}</p>
+        <app-download-button [movieId]="movie.id"></app-download-button>
+        <a [routerLink]="watchRouterLink">Watch</a>
+    </div>
+</div>

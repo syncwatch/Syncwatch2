@@ -13,6 +13,10 @@ class UnauthorizedException(werkzeug.exceptions.HTTPException):
     code = 401
 
 
+class NotFoundException(werkzeug.exceptions.HTTPException):
+    code = 404
+
+
 class LoginMissingException(WrongInputException):
     def __init__(self, *args, **kwargs):
         self.description = 'login_data_missing_exception'
@@ -34,4 +38,28 @@ class SessionUnauthorizedException(UnauthorizedException):
 class SessionExpiredException(UnauthorizedException):
     def __init__(self, *args, **kwargs):
         self.description = 'session_expired_exception'
+        super().__init__(*args, **kwargs)
+
+
+class MovieIdMissingException(WrongInputException):
+    def __init__(self, *args, **kwargs):
+        self.description = 'movie_id_missing_exception'
+        super().__init__(*args, **kwargs)
+
+
+class ThumbnailIdMissingException(WrongInputException):
+    def __init__(self, *args, **kwargs):
+        self.description = 'thumbnail_id_missing_exception'
+        super().__init__(*args, **kwargs)
+
+
+class MovieNotFoundException(NotFoundException):
+    def __init__(self, *args, **kwargs):
+        self.description = 'movie_not_found_exception'
+        super().__init__(*args, **kwargs)
+
+
+class ThumbnailNotFoundException(NotFoundException):
+    def __init__(self, *args, **kwargs):
+        self.description = 'thumbnail_not_found_exception'
         super().__init__(*args, **kwargs)

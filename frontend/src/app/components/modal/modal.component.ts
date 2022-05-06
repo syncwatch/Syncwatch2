@@ -10,7 +10,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class ModalComponent implements OnInit {
     _bodyHtml = '';
     _title = '';
-    _buttons: Array<Button> = [];
+    _buttons: Button[] = [];
 
     onClose = new EventEmitter<any>();
 
@@ -22,7 +22,7 @@ export class ModalComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    open(bodyHtml: string, title: string = 'Modal Title', buttons: Array<Button>): Promise<any> {
+    open(bodyHtml: string, title: string = 'Modal Title', buttons: Button[]): Promise<any> {
         this._bodyHtml = bodyHtml;
         this._title = title;
         this._buttons = buttons;

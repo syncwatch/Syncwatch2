@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { api_endpoints } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { Session } from './session';
 import { IUserService } from './user.service.interface';
@@ -12,7 +12,7 @@ export class UserService implements IUserService {
     constructor(private http: HttpClient, private authService: AuthService) {}
 
     sessions(): Observable<Session[]> {
-        return this.http.get<{ sessions: Session[] }>(environment.api_base_url + '/sessions', {
+        return this.http.get<{ sessions: Session[] }>(api_endpoints.SESSIONS_URL, {
             headers: {
                 'Authorization': this.authService.getSessionToken()
             }
@@ -22,7 +22,7 @@ export class UserService implements IUserService {
     }
 
     deleteSessions(): Observable<any> {
-        return this.http.post<any>(environment.api_base_url + '/delete-sessions', {}, {
+        return this.http.post<any>(api_endpoints.DELETE_SESSIONS_URL, {}, {
             headers: {
                 'Authorization': this.authService.getSessionToken()
             }
@@ -32,7 +32,7 @@ export class UserService implements IUserService {
     }
 
     deleteSessionById(id: number, delete_after: boolean): Observable<any> {
-        let obs = this.http.post<any>(environment.api_base_url + '/delete-sessions', {
+        let obs = this.http.post<any>(api_endpoints.DELETE_SESSIONS_URL, {
             session_id: id
         }, {
             headers: {

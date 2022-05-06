@@ -25,6 +25,11 @@ import { OnlineGuardService } from './shared/sync/online-guard.service';
 import { SyncService } from './shared/sync/sync.service';
 import { StorageService } from './shared/storage/storage.service';
 import { DownloadsComponent } from './pages/downloads/downloads.component';
+import { MovieService } from './shared/movie/movie.service';
+import { MovieService as MockMovieService } from './shared/movie/movie.mock.service';
+import { serviceWorkerConfig } from './shared/worker/service.worker.config';
+import { FullscreenGuardService } from './shared/display/fullscreen-guard.service';
+import { NoFullscreenGuardService } from './shared/display/no-fullscreen-guard.service';
 
 @NgModule({
     declarations: [
@@ -43,11 +48,12 @@ import { DownloadsComponent } from './pages/downloads/downloads.component';
         ReactiveFormsModule,
         HttpClientModule,
         NgbModule,
-        ServiceWorkerModule.register('ngsw-worker.js', {
-          enabled: true,
-          // Register the ServiceWorker as soon as the application is stable
-          // or after 30 seconds (whichever comes first).
-          registrationStrategy: 'registerWhenStable:30000'
+        ServiceWorkerModule.register(serviceWorkerConfig.serviceWorkerUrl, {
+            enabled: serviceWorkerConfig.enabled,
+            // Register the ServiceWorker as soon as the application is stable
+            // or after 30 seconds (whichever comes first).
+            // registrationStrategy: 'registerWhenStable:30000',
+            registrationStrategy: 'registerImmediately',
         }),
     ],
     providers: [
@@ -57,9 +63,12 @@ import { DownloadsComponent } from './pages/downloads/downloads.component';
             multi: true
         },
         DisplayService,
+        FullscreenGuardService,
+        NoFullscreenGuardService,
         OnlineGuardService,
         SyncService,
         StorageService,
+        (environment.mock_http ? { provide: MovieService, useClass: MockMovieService } : MovieService),
         (environment.mock_http ? { provide: AuthService, useClass: MockAuthService } : AuthService),
         (environment.mock_http ? { provide: UserService, useClass: MockUserService } : UserService),
         (environment.deactivate_auth_guard ? { provide: AuthGuardService, useClass: MockAuthGuardService } : AuthGuardService),

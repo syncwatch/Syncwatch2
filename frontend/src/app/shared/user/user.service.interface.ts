@@ -2,7 +2,7 @@ import { Observable } from "rxjs";
 import { Session } from "./session";
 
 export interface IUserService {
-    sessions(): Observable<Array<Session>>;
+    sessions(): Observable<Session[]>;
 
     deleteSessions(): Observable<any>;
 

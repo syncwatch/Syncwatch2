@@ -8,16 +8,14 @@
         </button>
         <div class="collapse navbar-collapse py-2" [ngbCollapse]="isCollapsed" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto align-items-center">
-                <li class="nav-item">
-                    <a class="nav-link" routerLinkActive="active" routerLink="/home">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" routerLinkActive="active" routerLink="/movies">Movies</a>
+                <li class="nav-item" *ngFor="let route of navStartRoutes">
+                    <a class="nav-link" routerLinkActive="active" [routerLink]="route.path">{{route.title}}</a>
                 </li>
             </ul>
             <ul class="navbar-nav align-items-center">
-                <a class="nav-link" routerLinkActive="active" routerLink="/downloads">Downloads</a>
-                <a *ngIf="syncService.isOnline()" class="nav-link" routerLinkActive="active" routerLink="/profile">Profile</a>
+                <li class="nav-item" *ngFor="let route of navEndRoutes">
+                    <a class="nav-link" routerLinkActive="active" [routerLink]="route.path">{{route.title}}</a>
+                </li>
                 <button *ngIf="syncService.isOnline()" class="btn btn-secondary" (click)="logout()" [disabled]="logoutLoading">
                     <span *ngIf="logoutLoading" class="spinner-border spinner-border-sm" role="status"></span>
                     Logout

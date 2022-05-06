@@ -1,20 +1,37 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DisplayService } from 'src/app/shared/display/display.service';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { Movie } from 'src/app/shared/movie/movie';
+import { MovieService } from 'src/app/shared/movie/movie.service';
+import { SyncService } from 'src/app/shared/sync/sync.service';
 
 @Component({
     selector: 'app-overview',
     templateUrl: './overview.component.html',
-    styleUrls: ['./overview.component.scss']
+    styleUrls: ['./overview.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewComponent implements OnInit, OnDestroy {
 
-    constructor(private displayService: DisplayService) { }
+    allMovies$!: Observable<Movie[]>;
+
+    private onlineSubscription!: Subscription;
+
+    constructor(
+        private ref: ChangeDetectorRef,
+        private movieService: MovieService,
+        private syncService: SyncService
+    ) {}
 
     ngOnInit(): void {
-        this.displayService.requestFullscreenMobile();
+        this.allMovies$ = this.movieService.getMovies();
+
+        this.onlineSubscription = this.syncService.changes.subscribe(() => {
+            this.allMovies$ = this.movieService.getMovies();
+            this.ref.detectChanges();
+        });
     }
 
     ngOnDestroy(): void {
-        this.displayService.exitFullscreen();
+        if (this.onlineSubscription) this.onlineSubscription.unsubscribe();
     }
 }

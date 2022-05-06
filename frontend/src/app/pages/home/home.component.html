@@ -1,1 +1,19 @@
 <p>home works!</p>
+<button type="button" class="btn btn-primary" (click)="displayService.requestFullscreen()">
+    Enter Fullscreen
+</button>
+<button type="button" class="btn btn-primary" (click)="displayService.exitFullscreen()">
+    Exit Fullscreen
+</button>
+<button type="button" class="btn btn-primary" (click)="displayService.lockOrientation('landscape')">
+    Lock Rotation landscape
+</button>
+<button type="button" class="btn btn-primary" (click)="displayService.lockOrientation('portrait')">
+    Lock Rotation portrait
+</button>
+<button type="button" class="btn btn-primary" (click)="displayService.unlockOrientation()">
+    Unlock Rotation
+</button>
+<div *ngFor="let _ of [].constructor(30)" class="bg-danger mt-2 m-safe-x w-100">
+    SAFE BOX
+</div>

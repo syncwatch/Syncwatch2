@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 
-import { environment } from 'src/environments/environment';
+import { api_endpoints } from 'src/environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { Token } from './token';
 import { IAuthService } from './auth.service.interface';
@@ -18,14 +18,14 @@ export class AuthService implements IAuthService {
     }
 
     login(username: string, password: string, stay_signedin: boolean): Observable<Token> {
-        return this.http.post<Token>(environment.api_base_url + '/login', { username, password }).pipe(
+        return this.http.post<Token>(api_endpoints.LOGIN_URL, { username, password }).pipe(
             tap((res: Token) => this.setSession(res, stay_signedin)),
         );
     }
 
     logout(): Observable<any> {
         return this.http.post(
-            environment.api_base_url + '/logout',
+            api_endpoints.LOGOUT_URL,
             {},
             {
                 headers: {
@@ -42,6 +42,10 @@ export class AuthService implements IAuthService {
 
     isLoggedIn(): boolean {
         if (!this.syncService.isOnline()) return true;
+        return this.isOnlineLoggedIn();
+    }
+
+    isOnlineLoggedIn(): boolean {
         const exp = this.getExpiration();
         if (exp === undefined) return false;
         return exp === -1 || Math.floor(new Date().getTime() / 1000) < exp;
@@ -71,9 +75,8 @@ export class AuthService implements IAuthService {
     }
 
     unload(): void {
-        if (this.getStaySignedin()) return;
+        if (this.getStaySignedin() || !this.isOnlineLoggedIn()) return;
         this.logout().subscribe();
-        this.clearStorage();
     }
 
     clearStorage() {
