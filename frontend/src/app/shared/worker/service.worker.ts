@@ -5,7 +5,7 @@ async function getMovieStream(event: FetchEvent, url: URL): Promise<Response | u
     const movie_id = url.searchParams.get('id');
     if (movie_id === null) return;
     const movie = await db.movies.get(movie_id);
-    if (movie === undefined || movie.downloaded_length < movie.content_length) return;
+    if (movie === undefined || movie.downloaded_size! < movie.file_size!) return;
 
     const rangeRequest = event.request.headers.get('range') || '';
     const byteRanges = rangeRequest.match(/bytes=(?<from>[0-9]+)?-(?<to>[0-9]+)?/);
@@ -42,11 +42,11 @@ async function getMovieStream(event: FetchEvent, url: URL): Promise<Response | u
         i++;
     }
 
-    const blob = new Blob(<ArrayBuffer[]>await db.buffers.bulkGet(fragments.map(v => v.data_id)), { type: movie.mime_type });
+    const blob = new Blob(<ArrayBuffer[]>await db.buffers.bulkGet(fragments.map(v => v.data_id)), { type: movie.mime_type! });
 
     const responseOpts: any = {
-        status: responseEnd < movie.content_length ? 206 : 200,
-        statusText: responseEnd < movie.content_length ? 'Partial Content' : 'OK',
+        status: responseEnd < movie.file_size! ? 206 : 200,
+        statusText: responseEnd < movie.file_size! ? 'Partial Content' : 'OK',
         headers: {
             'Accept-Ranges': 'bytes',
             'Content-Disposition': 'inline',
@@ -55,7 +55,7 @@ async function getMovieStream(event: FetchEvent, url: URL): Promise<Response | u
         },
     };
     if (rangeRequest) {
-        responseOpts.headers['Content-Range'] = `bytes ${responseStart}-${responseEnd - 1}/${movie.content_length}`;
+        responseOpts.headers['Content-Range'] = `bytes ${responseStart}-${responseEnd - 1}/${movie.file_size!}`;
     }
 
     return new Response(

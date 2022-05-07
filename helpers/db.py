@@ -15,7 +15,7 @@ class Representable:
         return self._repr(**self.to_dict())
 
     def to_dict(self):
-        return {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
+        return {k: v for k, v in self.__dict__.items() if not k.startswith('_') and not k.startswith('t_')}
 
     def _repr(self, **fields: Dict[str, Any]) -> str:
         """
@@ -60,16 +60,16 @@ class DeviceSession(Base):
 class MovieMeta(Base):
     __tablename__ = 'movie_meta'
     id = db.Column(db.String, primary_key=True)
-    relative_path = db.Column(db.String, nullable=False)
+    t_relative_path = db.Column(db.String, nullable=False)
     title = db.Column(db.String, nullable=False)
     thumbnail_id = db.Column(db.String, nullable=True)
     hash = db.Column(db.String, nullable=True)
     file_size = db.Column(db.Integer, nullable=True)
     mime_type = db.Column(db.String, nullable=True)
     sw_type = db.Column(db.String, nullable=False)
-    series = db.Column(db.String, nullable=True)
-    season = db.Column(db.String, nullable=True)
-    episode = db.Column(db.String, nullable=True)
+    series_id = db.Column(db.String, nullable=True)
+    season_id = db.Column(db.String, nullable=True)
+    episode_id = db.Column(db.String, nullable=True)
     info = db.Column(db.String, nullable=True)
 
 
@@ -153,6 +153,11 @@ class Database:
         session = self.Session()
         session.merge(movie_meta)
         session.commit()
+
+    def get_movie_meta(self) -> List[MovieMeta]:
+        session = self.Session()
+        stmt = db.select(MovieMeta)
+        return session.scalars(stmt).all()
 
     def get_movie_meta_by_sw_type_prefix(self, sw_type_prefix: str) -> List[MovieMeta]:
         session = self.Session()

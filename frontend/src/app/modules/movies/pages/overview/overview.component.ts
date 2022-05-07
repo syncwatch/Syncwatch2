@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { Movie } from 'src/app/shared/movie/movie';
+import { MovieMeta } from 'src/app/shared/movie/movie-meta';
 import { MovieService } from 'src/app/shared/movie/movie.service';
 import { SyncService } from 'src/app/shared/sync/sync.service';
 
@@ -12,7 +12,7 @@ import { SyncService } from 'src/app/shared/sync/sync.service';
 })
 export class OverviewComponent implements OnInit, OnDestroy {
 
-    allMovies$!: Observable<Movie[]>;
+    allMovies$!: Observable<MovieMeta[]>;
 
     private onlineSubscription!: Subscription;
 

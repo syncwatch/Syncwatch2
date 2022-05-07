@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import videojs from 'video.js';
 import { BehaviorSubject, firstValueFrom, from, Observable, of } from 'rxjs';
-import { Movie } from './movie';
+import { MovieMeta } from './movie-meta';
 import { IMovieService } from './movie.service.interface';
 import { DownloadProgress } from './download-progress';
 import { api_endpoints } from 'src/environments/environment';
@@ -12,28 +12,36 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class MovieService implements IMovieService {
 
-    private _movies: { [id: string]: Movie } = {
+    private _movies: { [id: string]: MovieMeta } = {
         '1': {
-            title: 'Video',
             id: '1',
+            corrupt: false,
+            title: 'Video',
             hash: '123',
             mime_type: 'video/webm',
-            downloaded_length: 0,
+            downloaded_size: 0,
             file_size: 500000 * 20,
-            content_length: 500000 * 20,
             thumbnail_id: '123',
-            corrupt: false,
+            sw_type: 'video-original',
+            episode_id: null,
+            season_id: null,
+            series_id: null,
+            info: null,
         },
         '2': {
-            title: 'Bibeo',
             id: '2',
+            corrupt: false,
+            title: 'Bibeo',
             hash: '1234',
             mime_type: 'video/webm',
-            downloaded_length: 500000 * 20,
+            downloaded_size: 500000 * 20,
             file_size: 500000 * 20,
-            content_length: 500000 * 20,
             thumbnail_id: '123',
-            corrupt: false,
+            sw_type: 'video-original',
+            episode_id: null,
+            season_id: null,
+            series_id: null,
+            info: null,
         },
     };
     private targetChunkRequestTime = 1000;
@@ -59,18 +67,18 @@ export class MovieService implements IMovieService {
         return `${api_endpoints.THUMBNAIL_URL}?id=${id}&token=${this.authService.getSessionToken()}`;
     }
 
-    async getMovieById(id: string): Promise<Movie | undefined> {
+    async getMovieById(id: string): Promise<MovieMeta | undefined> {
         return this._movies[id];
     }
 
-    getMovies(): Observable<Movie[]> {
+    getMovies(): Observable<MovieMeta[]> {
         return of(Object.values(this._movies));
     }
 
     private _getMovieDownloadProgress(id: string): BehaviorSubject<DownloadProgress> {
         if (!(id in this.movieDownloads)) {
             this.movieDownloads[id] = new BehaviorSubject<DownloadProgress>({
-                downloaded: this._movies[id].downloaded_length / this._movies[id].content_length,
+                downloaded: this._movies[id].downloaded_size! / this._movies[id].file_size!,
                 downloading: false,
                 deleting: false
             });
@@ -92,7 +100,7 @@ export class MovieService implements IMovieService {
         if (currentProgress.deleting || currentProgress.downloading) return;
         progress.next({ deleting: true, downloading: false, downloaded: currentProgress.downloaded });
         setTimeout(() => {
-            movie.downloaded_length = 0;
+            movie.downloaded_size = 0;
             progress.next({ deleting: false, downloading: false, downloaded: 0 });
         }, 1000);
     }
@@ -110,15 +118,15 @@ export class MovieService implements IMovieService {
             }
             return;
         }
-        if (movie.thumbnail_id && movie.downloaded_length === 0) {
+        if (movie.thumbnail_id && movie.downloaded_size === 0) {
             progress.next({ downloaded: 0, downloading: true, deleting: false });
             this._downloadThumbnail(movie.thumbnail_id)
         };
         this._downloadMovieChunk(movie, progress);
     }
 
-    private _downloadMovieChunk(movie: Movie, progress: BehaviorSubject<DownloadProgress>): void {
-        if (movie.content_length && movie.downloaded_length >= movie.content_length) {
+    private _downloadMovieChunk(movie: MovieMeta, progress: BehaviorSubject<DownloadProgress>): void {
+        if (movie.file_size && movie.downloaded_size! >= movie.file_size) {
             progress.next({ downloaded: 1, downloading: false, deleting: false });
             return;
         }
@@ -146,8 +154,8 @@ export class MovieService implements IMovieService {
                 this.evaluatingChunkSize = false;
             }
 
-            movie.downloaded_length += this.downloadChunkSize;
-            progress.next({ downloaded: movie.downloaded_length / movie.content_length, downloading: true, deleting: false });
+            movie.downloaded_size! += this.downloadChunkSize;
+            progress.next({ downloaded: movie.downloaded_size! / movie.file_size!, downloading: true, deleting: false });
             this._downloadMovieChunk(movie, progress);
 
         }, this.targetChunkRequestTime);
@@ -156,7 +164,7 @@ export class MovieService implements IMovieService {
     async getMovieSources(id: string): Promise<videojs.Tech.SourceObject[]> {
         const movie = await this.getMovieById(id);
         if (movie === undefined) return [];
-        return [{ src: this._getMovieStreamUrl(id), type: movie.mime_type }];
+        return [{ src: this._getMovieStreamUrl(id), type: movie.mime_type! }];
     }
 
     private _downloadThumbnail(thumbnail_id: string) {

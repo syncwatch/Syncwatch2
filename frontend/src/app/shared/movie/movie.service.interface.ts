@@ -1,11 +1,11 @@
 import { Observable } from "rxjs";
-import { Movie } from "./movie";
+import { MovieMeta } from "./movie-meta";
 import videojs from "video.js";
 import { DownloadProgress } from "./download-progress";
 import { SafeUrl } from "@angular/platform-browser";
 
 export interface IMovieService {
-    getMovies(): Observable<Movie[]>;
+    getMovies(): Observable<MovieMeta[]>;
 
     getMovieDownloadProgress(id: string): Observable<DownloadProgress>;
 
@@ -13,7 +13,7 @@ export interface IMovieService {
 
     deleteMovieDownload(id: string): Promise<void>;
 
-    getMovieById(id: string): Promise<Movie | undefined>;
+    getMovieById(id: string): Promise<MovieMeta | undefined>;
 
     getMovieSources(id: string): Promise<videojs.Tech.SourceObject[]>;
 

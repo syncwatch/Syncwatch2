@@ -46,16 +46,17 @@ class MovieManager(DataManagerPart):
 
     def walk_movie_tree(self,
                         current_path: str,
-                        series: str = None,
-                        season: str = None,
-                        episode: str = None,
+                        series_id: str = None,
+                        season_id: str = None,
+                        episode_id: str = None,
                         thumbnail_id: str = None,
-                        ):
+                        ) -> int:
+        pid = path_to_id(current_path)
         full_path = os.path.join(self.data_path, current_path)
         if os.path.isfile(full_path):
             full_basename = os.path.basename(current_path)
             if full_basename == INFO_FILE:
-                return
+                return 0
 
             sw_type = None
 
@@ -63,7 +64,7 @@ class MovieManager(DataManagerPart):
             mime_type = guess_mime_type(current_path)
             if mime_type == '':
                 self.logger.warning('cannot evaluate mime type of ' + full_path + ' SKIPPING...')
-                return
+                return 0
 
             video_or_audio = mime_type.startswith('video/') or mime_type.startswith('audio/')
             if video_or_audio:
@@ -80,22 +81,24 @@ class MovieManager(DataManagerPart):
 
             if sw_type is None:
                 self.logger.warning('cannot evaluate role of ' + full_path + ' SKIPPING...')
-                return
+                return 0
 
+            file_size = os.stat(full_path).st_size
             self.db.update_movie_meta(MovieMeta(
-                id=path_to_id(current_path),
-                relative_path=current_path,
+                id=pid,
+                t_relative_path=current_path,
                 title=basename,
                 thumbnail_id=thumbnail_id,
                 hash=hash_file(full_path),
-                file_size=os.stat(full_path).st_size,
+                file_size=file_size,
                 mime_type=mime_type,
                 sw_type=sw_type,
-                series=series,
-                season=season,
-                episode=episode,
+                series_id=series_id,
+                season_id=season_id,
+                episode_id=episode_id,
             ))
-            return
+            return file_size
+
         files = os.listdir(full_path)
         thumbnails = list(filter(
             lambda x: x.startswith(THUMBNAIL_PREFIX) and guess_mime_type(x).startswith('image/'), files
@@ -103,17 +106,25 @@ class MovieManager(DataManagerPart):
         if len(thumbnails) > 0:
             thumbnail_id = path_to_id(os.path.join(current_path, thumbnails[0]))
 
-        pid = path_to_id(current_path)
         sw_type = None
         if current_path.endswith(SERIES_SUFFIX):
-            series = pid
+            series_id = pid
             sw_type = 'series'
         elif current_path.endswith(SEASON_SUFFIX):
-            season = pid
+            season_id = pid
             sw_type = 'season'
         elif current_path.endswith(EPISODE_SUFFIX):
-            episode = pid
+            episode_id = pid
             sw_type = 'episode'
+
+        file_size = 0
+
+        for f in files:
+            file_size += self.walk_movie_tree(os.path.join(current_path, f),
+                                              series_id,
+                                              season_id,
+                                              episode_id,
+                                              thumbnail_id)
 
         if sw_type is not None:
             info_string = None
@@ -128,18 +139,18 @@ class MovieManager(DataManagerPart):
 
             self.db.update_movie_meta(MovieMeta(
                 id=pid,
-                relative_path=current_path,
+                t_relative_path=current_path,
                 title=os.path.splitext(os.path.basename(current_path))[0],
                 thumbnail_id=thumbnail_id,
+                file_size=file_size,
                 sw_type=sw_type,
-                series=series,
-                season=season,
-                episode=episode,
+                series_id=series_id,
+                season_id=season_id,
+                episode_id=episode_id,
                 info=info_string,
             ))
 
-        for f in files:
-            self.walk_movie_tree(os.path.join(current_path, f), series, season, episode, thumbnail_id)
+        return file_size
 
     def update_movies(self):
         self.walk_movie_tree('')
@@ -148,19 +159,19 @@ class MovieManager(DataManagerPart):
         return self.db.get_movie_meta_by_id(mid)
 
     def get_movies_meta(self) -> List[MovieMeta]:
-        return self.db.get_movie_meta_by_sw_type_prefix('video-')
+        return self.db.get_movie_meta()
 
     def get_thumbnail(self, tid: str) -> werkzeug.Response:
         thumbnail = self.get_movie_meta_by_id(tid)
         if thumbnail is None or not thumbnail.sw_type == 'thumbnail':
             raise ThumbnailNotFoundException()
-        return send_file(os.path.join(self.data_path, thumbnail.relative_path), mimetype=thumbnail.mime_type)
+        return send_file(os.path.join(self.data_path, thumbnail.t_relative_path), mimetype=thumbnail.mime_type)
 
     def stream_movie(self, mid: str) -> werkzeug.Response:
         movie = self.get_movie_meta_by_id(mid)
         if movie is None or not movie.sw_type.startswith('video-'):
             raise MovieNotFoundException()
-        full_path = os.path.join(self.data_path, movie.relative_path)
+        full_path = os.path.join(self.data_path, movie.t_relative_path)
 
         file_size = os.stat(full_path).st_size
         start = 0

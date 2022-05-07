@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom, fromEvent, map, filter, Observable, of, take } from 'rxjs';
-import { Movie } from '../movie/movie';
+import { MovieMeta } from '../movie/movie-meta';
 import { MovieFragment } from '../movie/movie-fragment';
 import { Thumbnail } from '../movie/thumbnail';
 
@@ -50,8 +50,9 @@ export class StorageService {
         ));
     }
 
-    bytesToReadable(b: number | undefined): string {
-        if (b === undefined) return "Unknown";
+    bytesToReadable(b: number | null | undefined): string {
+        if (b === undefined) return 'Unknown';
+        if (b === null) return '0';
         for (let byteSize of this.byteSizes) {
             if (b >= byteSize.v) return `${(b / byteSize.v).toFixed()} ${byteSize.s}`;
         }
@@ -134,15 +135,15 @@ export class StorageService {
         return "never";
     }
 
-    async getMovies(): Promise<Movie[]> {
+    async getMovies(): Promise<MovieMeta[]> {
         return await this.workerPostMessage('getMovies');
     }
 
-    async getMovie(id: string): Promise<Movie | undefined> {
+    async getMovie(id: string): Promise<MovieMeta | undefined> {
         return await this.workerPostMessage('getMovie', id);
     }
 
-    async putMovie(movie: Movie): Promise<void> {
+    async putMovie(movie: MovieMeta): Promise<void> {
         return await this.workerPostMessage('putMovie', movie);
     }
 

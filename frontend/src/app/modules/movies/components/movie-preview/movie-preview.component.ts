@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
-import { Movie } from 'src/app/shared/movie/movie';
+import { MovieMeta } from 'src/app/shared/movie/movie-meta';
 import { MovieService } from 'src/app/shared/movie/movie.service';
 import { StorageService } from 'src/app/shared/storage/storage.service';
 
@@ -12,7 +12,7 @@ import { StorageService } from 'src/app/shared/storage/storage.service';
 export class MoviePreviewComponent implements OnInit {
 
     @Input()
-    movie!: Movie;
+    movie!: MovieMeta;
 
     @Input()
     watchRouterLink!: string | any[];

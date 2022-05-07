@@ -1,11 +1,11 @@
 import Dexie, { Table } from 'dexie';
-import { Movie } from '../movie/movie';
+import { MovieMeta } from '../movie/movie-meta';
 import { MovieFragmentIndex } from '../movie/movie-fragment';
 import { Thumbnail } from '../movie/thumbnail';
 
 export class AppDB extends Dexie {
     buffers!: Table<ArrayBuffer, number>;
-    movies!: Table<Movie, string>;
+    movies!: Table<MovieMeta, string>;
     movie_fragments!: Table<MovieFragmentIndex, number>;
     thumbnails!: Table<Thumbnail, string>;
 

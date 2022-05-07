@@ -1,11 +1,11 @@
 /// <reference lib="webworker" />
 
-import { Movie } from "../movie/movie";
+import { MovieMeta } from "../movie/movie-meta";
 import { MovieFragment } from "../movie/movie-fragment";
 import { Thumbnail } from "../movie/thumbnail";
 import { db } from "./db";
 
-async function putMovie(movie: Movie): Promise<any> {
+async function putMovie(movie: MovieMeta): Promise<any> {
     return await db.movies.put(movie, movie.id);
 }
 
@@ -42,11 +42,11 @@ async function putThumbnail(thumbnail: Thumbnail): Promise<string> {
     return await db.thumbnails.put(thumbnail, thumbnail.id);
 }
 
-async function getMovies(): Promise<Movie[]> {
+async function getMovies(): Promise<MovieMeta[]> {
     return await db.movies.toArray();
 }
 
-async function getMovie(id: string): Promise<Movie | undefined> {
+async function getMovie(id: string): Promise<MovieMeta | undefined> {
     return await db.movies.get(id);
 }
 

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import videojs from 'video.js';
 import { BehaviorSubject, catchError, firstValueFrom, from, map, Observable, ObservableInput, of } from 'rxjs';
-import { Movie } from './movie';
+import { MovieMeta } from './movie-meta';
 import { IMovieService } from './movie.service.interface';
 import { DownloadProgress } from './download-progress';
 import { StorageService } from '../storage/storage.service';
@@ -43,20 +43,20 @@ export class MovieService implements IMovieService {
         return `${api_endpoints.THUMBNAIL_URL}?id=${id}&token=${this.authService.getSessionToken()}`;
     }
 
-    async getMovieById(id: string): Promise<Movie | undefined> {
+    async getMovieById(id: string): Promise<MovieMeta | undefined> {
         const storageMovie = await this.storageService.getMovie(id);
         if (this.syncService.isOffline()) return storageMovie;
 
-        const apiMovie = await firstValueFrom((this.http.get<{ movie: Movie }>(this._getMovieUrl(id), {
+        const apiMovie = await firstValueFrom((this.http.get<{ movie: MovieMeta }>(this._getMovieUrl(id), {
             headers: {
                 'Authorization': this.authService.getSessionToken()
             }
         }).pipe(
             map(data => {
-                data.movie.downloaded_length = 0;
+                data.movie.downloaded_size = 0;
                 return data.movie;
             }),
-            catchError<Movie | undefined, ObservableInput<Movie | undefined>>(() => {
+            catchError<MovieMeta | undefined, ObservableInput<MovieMeta | undefined>>(() => {
                 return of(storageMovie);
             }),
         )));
@@ -69,15 +69,15 @@ export class MovieService implements IMovieService {
         return apiMovie;
     }
 
-    getMovies(): Observable<Movie[]> {
+    getMovies(): Observable<MovieMeta[]> {
         if (this.syncService.isOffline()) return from(this.storageService.getMovies());
-        return this.http.get<{ movies: Movie[] }>(api_endpoints.MOVIES_URL, {
+        return this.http.get<{ movies: MovieMeta[] }>(api_endpoints.MOVIES_URL, {
             headers: {
                 'Authorization': this.authService.getSessionToken()
             }
         }).pipe(
             map(data => data.movies),
-            catchError<Movie[], ObservableInput<Movie[]>>(() => {
+            catchError<MovieMeta[], ObservableInput<MovieMeta[]>>(() => {
                 return from(this.storageService.getMovies());
             }),
         );
@@ -88,7 +88,7 @@ export class MovieService implements IMovieService {
             this.movieDownloads[id] = new BehaviorSubject<DownloadProgress>({ downloaded: 0, downloading: false, deleting: false });
             this.storageService.getMovie(id).then(movie => {
                 if (movie === undefined) return;
-                this.movieDownloads[id].next({ downloaded: movie.downloaded_length / movie.content_length, downloading: false, deleting: false });
+                this.movieDownloads[id].next({ downloaded: movie.downloaded_size! / movie.file_size!, downloading: false, deleting: false });
             });
         }
 
@@ -124,15 +124,16 @@ export class MovieService implements IMovieService {
             }
             return;
         }
-        if (movie.thumbnail_id && movie.downloaded_length === 0) {
+        if (movie.thumbnail_id && !movie.downloaded_size) {
             progress.next({ downloaded: 0, downloading: true, deleting: false });
             this._downloadThumbnail(movie.thumbnail_id)
         };
         this._downloadMovieChunk(movie, progress);
     }
 
-    private _downloadMovieChunk(movie: Movie, progress: BehaviorSubject<DownloadProgress>): void {
-        if (movie.content_length && movie.downloaded_length >= movie.content_length) {
+    private _downloadMovieChunk(movie: MovieMeta, progress: BehaviorSubject<DownloadProgress>): void {
+        if (movie.downloaded_size === undefined) movie.downloaded_size = 0;
+        if (movie.file_size && movie.downloaded_size >= movie.file_size) {
             progress.next({ downloaded: 1, downloading: false, deleting: false });
             return;
         }
@@ -156,7 +157,7 @@ export class MovieService implements IMovieService {
             {
                 responseType: 'blob',
                 observe: 'response',
-                headers: { 'Range': `bytes=${movie.downloaded_length}-${movie.downloaded_length + this.downloadChunkSize}` },
+                headers: { 'Range': `bytes=${movie.downloaded_size}-${movie.downloaded_size + this.downloadChunkSize}` },
             }).subscribe(async (res: HttpResponse<Blob>) => {
                 if (res.body === null) return;
                 if (evaluationStart !== undefined) {
@@ -170,8 +171,8 @@ export class MovieService implements IMovieService {
                     const mime_type = res.headers.get('Content-Type');
                     if (movie.mime_type === undefined && mime_type) movie.mime_type = mime_type;
 
-                    const range = res.headers.get('Content-Range');
-                    if (movie.content_length === undefined && range) movie.content_length = +range.substring(range.lastIndexOf('/') + 1);
+                    // const range = res.headers.get('Content-Range');
+                    // if (movie.content_length === undefined && range) movie.content_length = +range.substring(range.lastIndexOf('/') + 1);
 
                     const content_length = res.headers.get('Content-Length');
                     if (content_length === null) return;
@@ -179,12 +180,12 @@ export class MovieService implements IMovieService {
                     await this.storageService.putMovieFragment({
                         movie_id: <string>movie.id,
                         data: buffer,
-                        start: movie.downloaded_length,
-                        end: movie.downloaded_length + Number(content_length),
+                        start: movie.downloaded_size!,
+                        end: movie.downloaded_size! + Number(content_length),
                     })
-                    movie.downloaded_length += Number(content_length);
+                    movie.downloaded_size! += Number(content_length);
                     await this.storageService.putMovie(movie);
-                    progress.next({ downloaded: movie.downloaded_length / movie.content_length, downloading: true, deleting: false });
+                    progress.next({ downloaded: movie.downloaded_size! / movie.file_size!, downloading: true, deleting: false });
                     this._downloadMovieChunk(movie, progress);
                 });
             });
@@ -193,7 +194,7 @@ export class MovieService implements IMovieService {
     async getMovieSources(id: string): Promise<videojs.Tech.SourceObject[]> {
         const movie = await this.getMovieById(id);
         if (movie === undefined) return [];
-        return [{ src: this._getMovieStreamUrl(id), type: movie.mime_type }];
+        return [{ src: this._getMovieStreamUrl(id), type: movie.mime_type! }];
     }
 
     private _downloadThumbnail(thumbnail_id: string) {
