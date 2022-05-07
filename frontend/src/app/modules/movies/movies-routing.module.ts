@@ -3,19 +3,26 @@ import { RouterModule, Routes } from '@angular/router';
 import { OverviewComponent } from './pages/overview/overview.component';
 import { WatchComponent } from './pages/watch/watch.component';
 import { FullscreenGuardService as FullscreenGuard } from '../../shared/display/fullscreen-guard.service';
+import { HomeComponent } from './pages/home/home.component';
 
 const routes: Routes = [
     {
-        path: 'overview',
-        component: OverviewComponent,
+        path: '',
+        component: HomeComponent,
         canActivate: [FullscreenGuard],
+        pathMatch: 'full',
     },
     {
         path: 'watch/:id',
         component: WatchComponent,
         canActivate: [FullscreenGuard],
     },
-    { path: '**', redirectTo: 'overview' },
+    {
+        path: ':movie_type/:id',
+        component: OverviewComponent,
+        canActivate: [FullscreenGuard],
+    },
+    { path: '**', redirectTo: '' },
 ];
 
 @NgModule({

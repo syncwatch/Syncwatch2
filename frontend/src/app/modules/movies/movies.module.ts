@@ -7,6 +7,8 @@ import { VideoPlayerComponent } from './components/video-player/video-player.com
 import { MoviePreviewComponent } from './components/movie-preview/movie-preview.component';
 import { DownloadButtonComponent } from './components/download-button/download-button.component';
 import { WatchComponent } from './pages/watch/watch.component';
+import { BackButtonComponent } from './components/back-button/back-button.component';
+import { HomeComponent } from './pages/home/home.component';
 
 
 @NgModule({
@@ -16,6 +18,8 @@ import { WatchComponent } from './pages/watch/watch.component';
     MoviePreviewComponent,
     DownloadButtonComponent,
     WatchComponent,
+    BackButtonComponent,
+    HomeComponent,
   ],
   imports: [
     CommonModule,

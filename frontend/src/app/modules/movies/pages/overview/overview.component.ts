@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Observable, switchMap } from 'rxjs';
 import { MovieMeta } from 'src/app/shared/movie/movie-meta';
 import { MovieService } from 'src/app/shared/movie/movie.service';
-import { SyncService } from 'src/app/shared/sync/sync.service';
 
 @Component({
     selector: 'app-overview',
@@ -10,28 +10,26 @@ import { SyncService } from 'src/app/shared/sync/sync.service';
     styleUrls: ['./overview.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OverviewComponent implements OnInit, OnDestroy {
+export class OverviewComponent implements OnInit {
 
+    movieType!: string;
+    movieId!: string;
     allMovies$!: Observable<MovieMeta[]>;
 
-    private onlineSubscription!: Subscription;
-
     constructor(
-        private ref: ChangeDetectorRef,
+        private route: ActivatedRoute,
         private movieService: MovieService,
-        private syncService: SyncService
     ) {}
 
     ngOnInit(): void {
-        this.allMovies$ = this.movieService.getMovies();
-
-        this.onlineSubscription = this.syncService.changes.subscribe(() => {
-            this.allMovies$ = this.movieService.getMovies();
-            this.ref.detectChanges();
-        });
-    }
-
-    ngOnDestroy(): void {
-        if (this.onlineSubscription) this.onlineSubscription.unsubscribe();
+        this.allMovies$ = this.route.paramMap.pipe(
+            switchMap(params => {
+                const movieId = params.get('id');
+                const movieType = params.get('movie_type');
+                if (movieId !== null) this.movieId = movieId;
+                if (movieType !== null) this.movieType = movieType;
+                return this.movieService.getMovies();
+            })
+        );
     }
 }

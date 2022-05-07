@@ -1,6 +1,5 @@
 <div class="m-safe-x">
-    <a [routerLink]="['..']">Back</a>
-
+    <app-back-button></app-back-button>
     <ng-container *ngIf="!loading else loadingSpinner">
         <ng-container *ngIf="videoSrc else noMovie">
             <app-video-player class="mw-100" [options]="{autoplay: true, controls: true}" [sources]="videoSrc"></app-video-player>

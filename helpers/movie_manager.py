@@ -68,7 +68,9 @@ class MovieManager(DataManagerPart):
 
             video_or_audio = mime_type.startswith('video/') or mime_type.startswith('audio/')
             if video_or_audio:
-                if basename == 'video':
+                if episode_id is None:
+                    sw_type = 'video'
+                elif basename == 'video':
                     sw_type = 'video-original'
                 else:
                     sw_type = 'video-alternative'
@@ -169,7 +171,7 @@ class MovieManager(DataManagerPart):
 
     def stream_movie(self, mid: str) -> werkzeug.Response:
         movie = self.get_movie_meta_by_id(mid)
-        if movie is None or not movie.sw_type.startswith('video-'):
+        if movie is None or not movie.sw_type.startswith('video'):
             raise MovieNotFoundException()
         full_path = os.path.join(self.data_path, movie.t_relative_path)
 

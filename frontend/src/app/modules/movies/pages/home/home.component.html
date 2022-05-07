@@ -1,0 +1,13 @@
+<div class="m-safe-x">
+    <div *ngIf="allMovies$ | async as movies; else loading" class="card-group">
+        <ng-container *ngFor="let movie of movies">
+            <app-movie-preview *ngIf="movie.sw_type === 'series'" [movie]="movie" [watchRouterLink]="['/movies', 'series', movie.id]"></app-movie-preview>
+            <app-movie-preview *ngIf="!movie.series_id && movie.sw_type === 'season'" [movie]="movie" [watchRouterLink]="['/movies', 'season', movie.id]"></app-movie-preview>
+            <app-movie-preview *ngIf="!movie.series_id && !movie.season_id && movie.sw_type === 'episode'" [movie]="movie" [watchRouterLink]="['/movies', 'watch', movie.id]"></app-movie-preview>
+            <app-movie-preview *ngIf="!movie.series_id && !movie.season_id && !movie.episode_id && movie.sw_type == 'video'" [movie]="movie" [watchRouterLink]="['/movies', 'watch', movie.id]"></app-movie-preview>
+        </ng-container>
+    </div>
+    <ng-template #loading>
+        <div class="spinner-border" role="status"></div>
+    </ng-template>
+</div>
