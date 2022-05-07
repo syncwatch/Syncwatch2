@@ -53,6 +53,12 @@ class ThumbnailIdMissingException(WrongInputException):
         super().__init__(*args, **kwargs)
 
 
+class SubtitleIdMissingException(WrongInputException):
+    def __init__(self, *args, **kwargs):
+        self.description = 'subtitle_id_missing_exception'
+        super().__init__(*args, **kwargs)
+
+
 class MovieNotFoundException(NotFoundException):
     def __init__(self, *args, **kwargs):
         self.description = 'movie_not_found_exception'
@@ -63,3 +69,10 @@ class ThumbnailNotFoundException(NotFoundException):
     def __init__(self, *args, **kwargs):
         self.description = 'thumbnail_not_found_exception'
         super().__init__(*args, **kwargs)
+
+
+class SubtitleNotFoundException(NotFoundException):
+    def __init__(self, *args, **kwargs):
+        self.description = 'subtitle_not_found_exception'
+        super().__init__(*args, **kwargs)
+

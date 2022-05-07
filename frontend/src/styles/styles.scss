@@ -7,9 +7,6 @@
 /* Importing Bootswatch SCSS file. */
 @import './bootswatch.scss';
 
-/* Import video js file */
-@import '~video.js/dist/video-js.min.css';
-
 html,
 body {
     min-height: 100%;
@@ -56,4 +53,10 @@ body:-moz-full-screen {
 .m-safe-y {
     margin-top: env(safe-area-inset-top);
     margin-bottom: env(safe-area-inset-bottom);
+}
+
+// vertical slider
+input[type=range][orient=vertical] {
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* Chromium */
 }

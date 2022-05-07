@@ -16,7 +16,8 @@ from helpers.data_manager import DataManager
 from helpers.db import Database, DeviceSession, User
 
 from helpers.exceptions import LoginMissingException, LoginIncorrectException, DuplicateSessionTokenException, \
-    SessionUnauthorizedException, SessionExpiredException, MovieIdMissingException, ThumbnailIdMissingException
+    SessionUnauthorizedException, SessionExpiredException, MovieIdMissingException, ThumbnailIdMissingException, \
+    SubtitleIdMissingException
 from helpers.json_encoder import create_json_encoder
 
 
@@ -176,6 +177,12 @@ class WebServer(threading.Thread):
             raise ThumbnailIdMissingException()
         return self.data_manager.movie.get_thumbnail(request.args['id'])
 
+    async def subtitle(self):
+        session = await self.get_session_by_arg()
+        if 'id' not in request.args:
+            raise SubtitleIdMissingException()
+        return self.data_manager.movie.get_subtitle(request.args['id'])
+
     def _add_user(self, username: str, password: str, permission: int, premium: bool):
         self.db.add_user(username, self.hash_dealer.hash_password(password), permission, premium)
 
@@ -274,6 +281,7 @@ class WebServer(threading.Thread):
             Page(path=f"{api_base}/movie", get_func=self.movie),
             Page(path=f"{api_base}/movies", get_func=self.movies),
             Page(path=f"{api_base}/thumbnail", get_func=self.thumbnail),
+            Page(path=f"{api_base}/subtitle", get_func=self.subtitle),
             Page(path=f"{api_base}/stream", get_func=self.stream),
             Page(path='/<path:path>', get_func=static_file),
             Page(path='/', get_func=send_root),

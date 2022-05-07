@@ -1,6 +1,5 @@
 import { Observable } from "rxjs";
 import { MovieMeta } from "./movie-meta";
-import videojs from "video.js";
 import { DownloadProgress } from "./download-progress";
 import { SafeUrl } from "@angular/platform-browser";
 
@@ -15,7 +14,9 @@ export interface IMovieService {
 
     getMovieById(id: string): Promise<MovieMeta | undefined>;
 
-    getMovieSources(id: string): Promise<videojs.Tech.SourceObject[]>;
+    getMovieStreamUrl(id: string): string;
 
-    getMovieThumbnailSource(thumbnail_id: string | null): Promise<string | SafeUrl>;
+    getThumbnailUrl(id: string | null): string;
+
+    getSubtitleUrl(id: string): string;
 }

@@ -1,15 +1,15 @@
 <div class="m-safe-x">
     <app-back-button></app-back-button>
-    <ng-container *ngIf="!loading else loadingSpinner">
-        <ng-container *ngIf="videoSrc else noMovie">
-            <app-video-player class="mw-100" [options]="{autoplay: true, controls: true}" [sources]="videoSrc"></app-video-player>
-            <app-download-button [movieId]="movieId!"></app-download-button>
+    <ng-container *ngIf="movie$ | async as movie; else loading">
+        <ng-container *ngIf="movie !== 1 else noMovie">
+            <app-video-player class="mw-100" [movie]="movie"></app-video-player>
+            <app-download-button [movieId]="movie.id"></app-download-button>
         </ng-container>
         <ng-template #noMovie>
             <div class="alert alert-danger mt-2" role="alert">Movie not found</div>
         </ng-template>
     </ng-container>
-    <ng-template #loadingSpinner>
+    <ng-template #loading>
         <div class="spinner-border" role="status"></div>
     </ng-template>
 </div>

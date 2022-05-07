@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import videojs from 'video.js';
-import { BehaviorSubject, firstValueFrom, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs';
 import { MovieMeta } from './movie-meta';
 import { IMovieService } from './movie.service.interface';
 import { DownloadProgress } from './download-progress';
@@ -75,12 +74,17 @@ export class MovieService implements IMovieService {
     ) {
     }
 
-    private _getMovieStreamUrl(id: string): string {
+    getMovieStreamUrl(id: string): string {
         return `${api_endpoints.MOVIE_STREAM_URL}?id=${id}&token=${this.authService.getSessionToken()}`;
     }
 
-    private _getThumbnailUrl(id: string): string {
+    getThumbnailUrl(id: string | null): string {
+        if (id === null) return '/assets/default-thumbnail.svg';
         return `${api_endpoints.THUMBNAIL_URL}?id=${id}&token=${this.authService.getSessionToken()}`;
+    }
+
+    getSubtitleUrl(id: string): string {
+        return `${api_endpoints.MOVIE_SUBTITLE_URL}?id=${id}&token=${this.authService.getSessionToken()}`;
     }
 
     async getMovieById(id: string): Promise<MovieMeta | undefined> {
@@ -177,17 +181,6 @@ export class MovieService implements IMovieService {
         }, this.targetChunkRequestTime);
     }
 
-    async getMovieSources(id: string): Promise<videojs.Tech.SourceObject[]> {
-        const movie = await this.getMovieById(id);
-        if (movie === undefined) return [];
-        return [{ src: this._getMovieStreamUrl(id), type: movie.mime_type! }];
-    }
-
     private _downloadThumbnail(thumbnail_id: string) {
-    }
-
-    async getMovieThumbnailSource(thumbnail_id: string | null): Promise<string> {
-        if (thumbnail_id === null) return '/assets/default-thumbnail.svg';
-        return this._getThumbnailUrl(thumbnail_id);
     }
 }

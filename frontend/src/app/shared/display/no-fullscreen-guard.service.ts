@@ -10,7 +10,7 @@ export class NoFullscreenGuardService implements CanActivate {
     constructor(private displayService: DisplayService) { }
 
     canActivate(): boolean {
-        this.displayService.exitFullscreen();
+        this.displayService.exitFullscreenWithCheck();
         return true;
     }
 }

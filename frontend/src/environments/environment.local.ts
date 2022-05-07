@@ -10,6 +10,7 @@ export const api_endpoints = {
     MOVIE_URL: `${API_BASE_URL}/movie`,
     MOVIES_URL: `${API_BASE_URL}/movies`,
     MOVIE_STREAM_URL: `https://dl8.webmfiles.org/big-buck-bunny_trailer.webm`,
+    MOVIE_SUBTITLE_URL: `${API_BASE_URL}/subtitle`,
 };
 
 export const environment = {

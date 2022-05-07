@@ -170,6 +170,12 @@ class MovieManager(DataManagerPart):
             raise ThumbnailNotFoundException()
         return send_file(os.path.join(self.data_path, thumbnail.t_relative_path), mimetype=thumbnail.mime_type)
 
+    def get_subtitle(self, sid: str) -> werkzeug.Response:
+        subtitle = self.get_movie_meta_by_id(sid)
+        if subtitle is None or not subtitle.sw_type == 'subtitle':
+            raise ThumbnailNotFoundException()
+        return send_file(os.path.join(self.data_path, subtitle.t_relative_path), mimetype=subtitle.mime_type)
+
     def stream_movie(self, mid: str) -> werkzeug.Response:
         movie = self.get_movie_meta_by_id(mid)
         if movie is None or not movie.sw_type.startswith('video'):

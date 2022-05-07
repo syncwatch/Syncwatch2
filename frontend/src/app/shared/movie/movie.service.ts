@@ -1,7 +1,6 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import videojs from 'video.js';
 import { BehaviorSubject, catchError, firstValueFrom, from, map, Observable, ObservableInput, of } from 'rxjs';
 import { MovieMeta } from './movie-meta';
 import { IMovieService } from './movie.service.interface';
@@ -35,12 +34,17 @@ export class MovieService implements IMovieService {
         return `${api_endpoints.MOVIE_URL}?id=${id}`;
     }
 
-    private _getMovieStreamUrl(id: string): string {
+    getMovieStreamUrl(id: string): string {
         return `${api_endpoints.MOVIE_STREAM_URL}?id=${id}&token=${this.authService.getSessionToken()}`;
     }
 
-    private _getThumbnailUrl(id: string): string {
+    getThumbnailUrl(id: string | null): string {
+        if (id === null) return '/assets/default-thumbnail.svg';
         return `${api_endpoints.THUMBNAIL_URL}?id=${id}&token=${this.authService.getSessionToken()}`;
+    }
+
+    getSubtitleUrl(id: string): string {
+        return `${api_endpoints.MOVIE_SUBTITLE_URL}?id=${id}&token=${this.authService.getSessionToken()}`;
     }
 
     async getMovieById(id: string): Promise<MovieMeta | undefined> {
@@ -153,7 +157,7 @@ export class MovieService implements IMovieService {
         }
 
         this.http.get(
-            this._getMovieStreamUrl(movie.id!),
+            this.getMovieStreamUrl(movie.id!),
             {
                 responseType: 'blob',
                 observe: 'response',
@@ -191,15 +195,9 @@ export class MovieService implements IMovieService {
             });
     }
 
-    async getMovieSources(id: string): Promise<videojs.Tech.SourceObject[]> {
-        const movie = await this.getMovieById(id);
-        if (movie === undefined) return [];
-        return [{ src: this._getMovieStreamUrl(id), type: movie.mime_type! }];
-    }
-
     private _downloadThumbnail(thumbnail_id: string) {
         this.http.get(
-            this._getThumbnailUrl(thumbnail_id),
+            this.getThumbnailUrl(thumbnail_id),
             {
                 responseType: 'blob',
             }).subscribe(async (blob: Blob) => {
@@ -208,10 +206,5 @@ export class MovieService implements IMovieService {
                     blob: blob,
                 });
             });
-    }
-
-    async getMovieThumbnailSource(thumbnail_id: string | null): Promise<string> {
-        if (thumbnail_id === null) return '/assets/default-thumbnail.svg';
-        return this._getThumbnailUrl(thumbnail_id);
     }
 }
