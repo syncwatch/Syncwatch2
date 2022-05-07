@@ -12,6 +12,15 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class MovieService implements IMovieService {
 
+    private targetChunkRequestTime = 1000;
+    private downloadChunkSize = 500000;
+    private evaluatingChunkSize = false;
+    downloadSpeed = new BehaviorSubject<number>(0);
+
+    private movieDownloads: { [id: string]: BehaviorSubject<DownloadProgress> } = {};
+
+    private stopDownloads: { [id: string]: boolean } = {};
+
     private _movies: { [id: string]: MovieMeta } = {
         '1': {
             id: '1',
@@ -20,7 +29,7 @@ export class MovieService implements IMovieService {
             hash: '123',
             mime_type: null,
             downloaded_size: 0,
-            file_size: 500000 * 20,
+            file_size: this.downloadChunkSize * 20,
             thumbnail_id: '123',
             sw_type: 'series',
             episode_id: null,
@@ -35,7 +44,7 @@ export class MovieService implements IMovieService {
             hash: '123',
             mime_type: 'video/webm',
             downloaded_size: 0,
-            file_size: 500000 * 20,
+            file_size: this.downloadChunkSize * 20,
             thumbnail_id: '123',
             sw_type: 'video',
             episode_id: null,
@@ -49,8 +58,8 @@ export class MovieService implements IMovieService {
             title: 'Bibeo',
             hash: '1234',
             mime_type: 'video/webm',
-            downloaded_size: 500000 * 20,
-            file_size: 500000 * 20,
+            downloaded_size: this.downloadChunkSize * 20,
+            file_size: this.downloadChunkSize * 20,
             thumbnail_id: null,
             sw_type: 'video',
             episode_id: null,
@@ -59,14 +68,6 @@ export class MovieService implements IMovieService {
             info: null,
         },
     };
-    private targetChunkRequestTime = 1000;
-    private downloadChunkSize = 500000;
-    private evaluatingChunkSize = false;
-    downloadSpeed = new BehaviorSubject<number>(0);
-
-    private movieDownloads: { [id: string]: BehaviorSubject<DownloadProgress> } = {};
-
-    private stopDownloads: { [id: string]: boolean } = {};
 
     constructor(
         private http: HttpClient,

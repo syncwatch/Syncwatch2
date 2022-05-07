@@ -3,6 +3,7 @@ import json
 import os
 import re
 from logging import Logger
+from threading import Thread
 from typing import List
 
 import werkzeug
@@ -45,7 +46,7 @@ class MovieManager(DataManagerPart):
         self.update_movies()
 
     def walk_movie_tree(self,
-                        current_path: str,
+                        current_path: str = '',
                         series_id: str = None,
                         season_id: str = None,
                         episode_id: str = None,
@@ -155,7 +156,7 @@ class MovieManager(DataManagerPart):
         return file_size
 
     def update_movies(self):
-        self.walk_movie_tree('')
+        Thread(target=self.walk_movie_tree).start()
 
     def get_movie_meta_by_id(self, mid: str) -> MovieMeta:
         return self.db.get_movie_meta_by_id(mid)
