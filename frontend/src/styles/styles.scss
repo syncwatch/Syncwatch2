@@ -54,9 +54,3 @@ body:-moz-full-screen {
     margin-top: env(safe-area-inset-top);
     margin-bottom: env(safe-area-inset-bottom);
 }
-
-// vertical slider
-input[type=range][orient=vertical] {
-    writing-mode: bt-lr; /* IE */
-    -webkit-appearance: slider-vertical; /* Chromium */
-}
