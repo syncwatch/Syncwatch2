@@ -2,6 +2,7 @@
     <app-back-button></app-back-button>
     <ng-container *ngIf="movie$ | async as movie; else loading">
         <ng-container *ngIf="movie !== 1 else noMovie">
+            <h2>{{movie.title}}</h2>
             <app-video-player class="mw-100" [movie]="movie"></app-video-player>
             <app-download-button [movieId]="movie.id"></app-download-button>
         </ng-container>
