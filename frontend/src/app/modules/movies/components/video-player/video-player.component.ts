@@ -41,6 +41,17 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
             this.onPlay();
         });
 
+        this.player.audioTracks().on('change', () => {
+            const tracks = this.player.audioTracks();
+            for (var i = 0; i < tracks.length; i++) {
+                const track = tracks[i];
+                if (track.enabled) {
+                    this.changeAudioTrack(track);
+                    return;
+                }
+            }
+        });
+
         if (this.movie.sw_type == 'episode') {
             this.movieService.getMovies().subscribe(movies => {
                 this.alternativeVideos = [];
@@ -58,7 +69,6 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
                             break;
                     }
                 }
-                this.setSource();
                 this.setSource();
             });
             return;
@@ -81,19 +91,47 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
     }
 
     setSource(): void {
-        const tracks = this.player.remoteTextTracks();
-        for(let i = tracks.length - 1; i >=0; i--) {
-            this.player.removeRemoteTextTrack(<any>tracks[i]);
+        const audioTracks = this.player.audioTracks();
+        for (let i = audioTracks.length - 1; i >= 0; i--) {
+            this.player.audioTracks().removeTrack(audioTracks[i]);
+        }
+        const textTracks = this.player.remoteTextTracks();
+        for (let i = textTracks.length - 1; i >= 0; i--) {
+            this.player.removeRemoteTextTrack(<any>textTracks[i]);
         }
         this.player!.src(
             [{ src: this.movieService.getMovieStreamUrl(this.originalVideo.id), type: this.originalVideo.mime_type! }],
         );
+
+        this.player.audioTracks().addTrack(<any>new videojs.AudioTrack({
+            enabled: true,
+            id: 'video',
+            kind: 'main',
+            label: 'original',
+            language: 'en',
+        }));
+
+
+        for (let alt of this.alternativeVideos) {
+            this.player.audioTracks().addTrack(<any>new videojs.AudioTrack({
+                enabled: false,
+                id: alt.title,
+                kind: 'translation',
+                label: alt.title,
+                language: alt.title,
+            }));
+        }
+
         for (let sub of this.subtitles) {
             this.player!.addRemoteTextTrack({
                 src: this.movieService.getSubtitleUrl(sub.id),
                 srclang: sub.title,
             }, false);
         }
+    }
+
+    changeAudioTrack(track: videojs.VideojsAudioTrack): void {
+        console.log(track);
     }
 
     ngOnDestroy(): void {
