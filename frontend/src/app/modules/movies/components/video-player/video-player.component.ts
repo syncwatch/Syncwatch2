@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MovieMeta } from 'src/app/shared/movie/movie-meta';
 import { MovieService } from 'src/app/shared/movie/movie.service';
-import videojs, { VideoJsPlayerOptions } from 'video.js';
+import videojs from 'video.js';
 
 @Component({
     selector: 'app-video-player',
@@ -28,6 +28,8 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
     isAutoPlayMuted = true;
     private clickTimeout: any | undefined;
 
+    fullscreenDoubleClickDelay = 500;
+
     offsetAltAudio = 0; // value to adjust an offset for the alternative audio
     private altAudioOffsetStack: number[] = [];
     private altAudioOffsetStackSize = 10;
@@ -50,19 +52,73 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
+        const component: any = this;
+        const CustomPlayer = videojs.extend(videojs.getComponent('Player'), {
+            _volume: function (percentAsDecimal) {
+                const _this = <any>this;
+                let vol;
+
+                if (percentAsDecimal !== undefined) {
+                    // Force value to between 0 and 1
+                    vol = Math.max(0, Math.min(1, parseFloat(percentAsDecimal)));
+                    _this.cache_.volume = vol;
+                    _this.techCall_('setVolume', vol);
+
+                    if (vol > 0) {
+                        _this.lastVolume_(vol);
+                    }
+
+                    return;
+                }
+
+                // Default to 1 when returning current volume.
+                vol = parseFloat(_this.techGet_('volume'));
+                return (isNaN(vol)) ? 1 : vol;
+            },
+            volume: function (percentAsDecimal) {
+                const _this = <any>this;
+                if (component.selectedAlternative !== undefined && this.id() === 'player') {
+                    return component.altPlayer._volume(percentAsDecimal);
+                }
+                return _this._volume(percentAsDecimal);
+            },
+            _muted: function (muted) {
+                const _this = <any>this;
+                if (muted !== undefined) {
+                    _this.techCall_('setMuted', muted);
+                    return;
+                }
+                return _this.techGet_('muted') || false;
+            },
+            muted: function (muted) {
+                const _this = <any>this;
+                if (component.selectedAlternative !== undefined && this.id() === 'player') {
+                    return component.altPlayer._muted(muted);
+                }
+                return _this._muted(muted);
+            },
+        });
+
+        videojs.registerComponent('Player', CustomPlayer);
+
         this.player = videojs(this.videoElement.nativeElement, {
+            id: 'player',
             userActions: {
                 click: () => { this.onClick() },
                 doubleClick: () => { this.onDoubleClick() },
+            },
+            fluid: true,
+            controlBar: {
+                volumePanel: {
+                    inline: false,
+                },
             },
         }, () => {
             this.onPlayerReady();
         });
 
-        let x: VideoJsPlayerOptions
-
         this.altPlayer = videojs(this.altVideoElement.nativeElement, {
-
+            id: 'altPlayer',
         }, () => {
             // console.log('onPlayerReady');
         });
@@ -164,13 +220,20 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
     changeAudioTrack(track: videojs.VideojsAudioTrack): void {
         if (track.id === 'video') { // switch to original sound
             this.selectedAlternative = undefined;
-            // this.altPlayer.src('');
+            this.player.muted(this.altPlayer.muted());
+            this.player.volume(this.altPlayer.volume());
+            this.altPlayer.muted(true);
             this.altPlayer.pause();
-            // this.altPlayer.dispose();
         } else { // switch to alternative sound
             for (let alt of this.alternativeVideos) {
                 if (alt.id === track.id) {
+                    if (this.selectedAlternative === undefined) {
+                        this.altPlayer.muted(this.player.muted());
+                        this.altPlayer.volume(this.player.volume());
+                        this.player.muted(true);
+                    }
                     this.selectedAlternative = alt;
+                    this.player.trigger('volumechange');
                     this.altPlayer.src(
                         [{ src: this.movieService.getMovieStreamUrl(alt.id), type: alt.mime_type! }]
                     );
@@ -189,7 +252,7 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
             } else {
                 this.player.pause();
             }
-        }, 500);
+        }, this.fullscreenDoubleClickDelay);
     }
 
     onDoubleClick(): void {
