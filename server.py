@@ -8,12 +8,13 @@ from typing import Any, Union
 import werkzeug
 from flask import Flask, jsonify, send_from_directory, redirect, request
 from flask.logging import default_handler
-from gevent.pywsgi import WSGIServer
+from flask_socketio import SocketIO
 from sqlalchemy.engine import Row
 
 from helpers.crypt import HashDealer, TokenGenerator
 from helpers.data_manager import DataManager
 from helpers.db import Database, DeviceSession, User
+from helpers.socket_watch import SocketWatch
 
 from helpers.exceptions import LoginMissingException, LoginIncorrectException, DuplicateSessionTokenException, \
     SessionUnauthorizedException, SessionExpiredException, MovieIdMissingException, ThumbnailIdMissingException, \
@@ -221,6 +222,9 @@ class WebServer(threading.Thread):
             name,
             root_path=self.root_path,
         )
+        self.io = SocketIO(self.app)
+        SocketWatch(self.io)
+
         self.app.json_encoder = create_json_encoder()
 
         self.app.debug = debug
@@ -291,11 +295,10 @@ class WebServer(threading.Thread):
             page.add_to_app(self.app)
 
     def run(self) -> None:
-        http_server = WSGIServer((self.HOST, self.PORT), self.app)
         self.app.logger.info('starting webserver on {}:{}'.format(self.HOST, self.PORT))
         if self.app.debug:
             self.app.logger.warning('app is running in debug mode')
-        http_server.serve_forever()
+        self.io.run(self.app, host=self.HOST, port=self.PORT)
 
 
 def main():

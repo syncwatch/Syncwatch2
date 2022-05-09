@@ -31,6 +31,7 @@
     "dexie": "^3.2.2",
     "esbuild": "^0.14.38",
     "ngx-device-detector": "^3.0.0",
+    "ngx-socket-io": "^4.2.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

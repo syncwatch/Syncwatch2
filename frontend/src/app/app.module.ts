@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -30,6 +30,9 @@ import { MovieService as MockMovieService } from './shared/movie/movie.mock.serv
 import { serviceWorkerConfig } from './shared/worker/service.worker.config';
 import { FullscreenGuardService } from './shared/display/fullscreen-guard.service';
 import { NoFullscreenGuardService } from './shared/display/no-fullscreen-guard.service';
+import { SocketIoModule } from 'ngx-socket-io';
+import { WatchSocket } from './shared/sockets/watch.socket';
+
 
 @NgModule({
     declarations: [
@@ -48,6 +51,7 @@ import { NoFullscreenGuardService } from './shared/display/no-fullscreen-guard.s
         ReactiveFormsModule,
         HttpClientModule,
         NgbModule,
+        SocketIoModule,
         ServiceWorkerModule.register(serviceWorkerConfig.serviceWorkerUrl, {
             enabled: serviceWorkerConfig.enabled,
             // Register the ServiceWorker as soon as the application is stable
@@ -62,6 +66,7 @@ import { NoFullscreenGuardService } from './shared/display/no-fullscreen-guard.s
             useClass: HttpInterceptorService,
             multi: true
         },
+        WatchSocket,
         DisplayService,
         FullscreenGuardService,
         NoFullscreenGuardService,

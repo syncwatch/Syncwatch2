@@ -25,6 +25,8 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
     altPlayer!: videojs.Player;
     selectedAlternative: MovieMeta | undefined;
 
+    currentTime = 0;
+
     isAutoPlayMuted = true;
     private clickTimeout: any | undefined;
 
@@ -139,6 +141,10 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
 
         this.player.on('timeupdate', () => {
             this.onTimeUpdate();
+        });
+
+        this.player.on('seeked', (e) => {
+            this.onSeeked();
         });
 
         this.player.audioTracks().on('change', () => {
@@ -268,6 +274,11 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
         this.player.muted(false);
         if (this.player.paused()) {
             this.isAutoPlayMuted = true;
+            const modal = this.player.createModal('Your player is currently muted, press to unmute!', {});
+            modal.on('click', () => {
+                this.player.muted(false);
+                modal.close();
+            });
             this.player.muted(true);
             this.player.play();
         }
@@ -282,6 +293,12 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
     onPause(): void {
         if (this.selectedAlternative !== undefined) { // update alt player
             this.altPlayer.pause();
+        }
+    }
+
+    onSeeked(): void {
+        if (this.selectedAlternative !== undefined) { // update alt player
+            this.altPlayer.currentTime(this.player.currentTime());
         }
     }
 
@@ -306,7 +323,8 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
             this.altAudioOffsetStack.push(this.altPlayer.currentTime() - this.player.currentTime() + this.offsetAltAudio);
 
         }
-        // this.ref.detectChanges();
+
+        this.currentTime = this.player.currentTime();
     }
 
     ngOnDestroy(): void {

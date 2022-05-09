@@ -1,4 +1,7 @@
 # Syncwatch2
+
+## Deployment Notes
+https://flask-socketio.readthedocs.io/en/latest/deployment.html
  
 ## Settings
 - DATABASE_URL
