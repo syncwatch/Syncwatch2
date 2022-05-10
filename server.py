@@ -223,7 +223,7 @@ class WebServer(threading.Thread):
             root_path=self.root_path,
         )
         self.io = SocketIO(self.app)
-        SocketWatch(self.io)
+        SocketWatch(self, self.io)
 
         self.app.json_encoder = create_json_encoder()
 

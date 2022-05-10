@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MovieMeta } from 'src/app/shared/movie/movie-meta';
 import { MovieService } from 'src/app/shared/movie/movie.service';
 import videojs from 'video.js';
@@ -17,6 +17,18 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
 
     @Input() movie!: MovieMeta;
 
+    @Output()
+    onPlay = new EventEmitter<number>();
+
+    @Output()
+    onPause = new EventEmitter<number>();
+
+    @Output()
+    onTimeUpdate = new EventEmitter<number>();
+
+    @Output()
+    onSeeked = new EventEmitter<number>();
+
     originalVideo!: MovieMeta;
     alternativeVideos: MovieMeta[] = [];
     subtitles: MovieMeta[] = [];
@@ -24,8 +36,6 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
     player!: videojs.Player;
     altPlayer!: videojs.Player;
     selectedAlternative: MovieMeta | undefined;
-
-    currentTime = 0;
 
     isAutoPlayMuted = true;
     private clickTimeout: any | undefined;
@@ -128,23 +138,23 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
 
     onPlayerReady(): void {
         this.player.one('play', () => {
-            this.onFirstPlay();
+            this.onPlayerFirstPlay();
         });
 
         this.player.on('play', () => {
-            this.onPlay();
+            this.onPlayerPlay();
         });
 
         this.player.on('pause', () => {
-            this.onPause();
+            this.onPlayerPause();
         });
 
         this.player.on('timeupdate', () => {
-            this.onTimeUpdate();
+            this.onPlayerTimeUpdate();
         });
 
         this.player.on('seeked', (e) => {
-            this.onSeeked();
+            this.onPlayerSeeked();
         });
 
         this.player.audioTracks().on('change', () => {
@@ -270,7 +280,7 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
         }
     }
 
-    onFirstPlay(): void {
+    onPlayerFirstPlay(): void {
         this.player.muted(false);
         if (this.player.paused()) {
             this.isAutoPlayMuted = true;
@@ -284,25 +294,28 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
         }
     }
 
-    onPlay(): void {
+    onPlayerPlay(): void {
         if (this.selectedAlternative !== undefined) { // update alt player
             this.altPlayer.play();
         }
+        this.onPlay.emit(this.player.currentTime());
     }
 
-    onPause(): void {
+    onPlayerPause(): void {
         if (this.selectedAlternative !== undefined) { // update alt player
             this.altPlayer.pause();
         }
+        this.onPause.emit(this.player.currentTime());
     }
 
-    onSeeked(): void {
+    onPlayerSeeked(): void {
         if (this.selectedAlternative !== undefined) { // update alt player
             this.altPlayer.currentTime(this.player.currentTime());
         }
+        this.onSeeked.emit(this.player.currentTime());
     }
 
-    onTimeUpdate(): void {
+    onPlayerTimeUpdate(): void {
         if (this.selectedAlternative !== undefined) { // update alt player
             if (Math.abs(this.altPlayer.currentTime() - this.player.currentTime() + this.offsetAltAudio) > this.altAudioOffsetTolerance) {
                 this.altPlayer.currentTime(this.player.currentTime() - this.offsetAltAudio - this.median(this.altAudioOffsetStack));
@@ -323,13 +336,15 @@ export class VideoPlayerComponent implements OnInit, OnDestroy {
             this.altAudioOffsetStack.push(this.altPlayer.currentTime() - this.player.currentTime() + this.offsetAltAudio);
 
         }
-
-        this.currentTime = this.player.currentTime();
+        this.onTimeUpdate.emit(this.player.currentTime());
     }
 
     ngOnDestroy(): void {
         if (this.player) {
             this.player.dispose();
+        }
+        if (this.altPlayer) {
+            this.altPlayer.dispose();
         }
     }
 }

@@ -1,11 +1,11 @@
 <div class="m-safe-x">
     <app-back-button></app-back-button>
-    <ng-container *ngIf="movie$ | async as movie; else loading">
-        <ng-container *ngIf="movie !== 1 else noMovie">
+    <ng-container *ngIf="movie !== 1; else loading">
+        <ng-container *ngIf="movie !== 2 else noMovie">
             <h2>{{movie.title}}</h2>
-            <app-video-player class="mw-100" [movie]="movie"></app-video-player>
+            <app-video-player class="mw-100" [movie]="movie" (onSeeked)="onSeeked($event)"></app-video-player>
             <app-download-button [movieId]="movie.id"></app-download-button>
-            <button class="btn btn-primary" (click)="createRoom()">Create Room</button>
+            <!-- <button class="btn btn-primary" (click)="createRoom()">Create Room</button> -->
         </ng-container>
         <ng-template #noMovie>
             <div class="alert alert-danger mt-2" role="alert">Movie not found</div>
