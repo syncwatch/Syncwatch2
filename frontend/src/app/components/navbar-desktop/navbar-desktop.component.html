@@ -1,0 +1,29 @@
+<nav ngbNav class="navbar navbar-expand-lg px-3 py-2 navbar-dark bg-primary">
+    <div class="navbar w-100 h-100 m-safe-t m-safe-x">
+        <app-logo></app-logo>
+        <button class="navbar-toggler ms-auto btn" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse py-2" [ngbCollapse]="isCollapsed" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto align-items-center">
+                <li class="nav-item" *ngFor="let route of navStartRoutes">
+                    <a class="nav-link" routerLinkActive="active" [routerLink]="route.path">{{route.title}}</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav align-items-center">
+                <li class="nav-item" *ngFor="let route of navEndRoutes">
+                    <a class="nav-link" routerLinkActive="active" [routerLink]="route.path">{{route.title}}</a>
+                </li>
+                <button *ngIf="syncService.isOnline()" class="btn btn-secondary" (click)="onLogout.next()" [disabled]="logoutLoading">
+                    <span *ngIf="logoutLoading" class="spinner-border spinner-border-sm" role="status"></span>
+                    Logout
+                </button>
+                <button *ngIf="!syncService.isOnline()" class="btn btn-secondary" (click)="onGoOnline.next()" [disabled]="!syncService.isVoluntaryOffline()">
+                    Go Online
+                </button>
+            </ul>
+        </div>
+    </div>
+</nav>

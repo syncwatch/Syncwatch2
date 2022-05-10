@@ -30,6 +30,7 @@ import { MovieService as MockMovieService } from './shared/movie/movie.mock.serv
 import { serviceWorkerConfig } from './shared/worker/service.worker.config';
 import { FullscreenGuardService } from './shared/display/fullscreen-guard.service';
 import { NoFullscreenGuardService } from './shared/display/no-fullscreen-guard.service';
+import { NavbarDesktopComponent } from './components/navbar-desktop/navbar-desktop.component';
 
 @NgModule({
     declarations: [
@@ -40,6 +41,7 @@ import { NoFullscreenGuardService } from './shared/display/no-fullscreen-guard.s
         LogoComponent,
         ModalComponent,
         DownloadsComponent,
+        NavbarDesktopComponent,
     ],
     imports: [
         BrowserModule,
