@@ -1,16 +1,11 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { catchError, filter, map, throwError } from 'rxjs';
 import { ModalComponent } from './components/modal/modal.component';
 import { AuthService } from './shared/auth/auth.service';
 import { StorageService } from './shared/storage/storage.service';
 import { SyncService } from './shared/sync/sync.service';
-
-export interface NavRoute {
-    path: string;
-    title: string;
-}
 
 @Component({
     selector: 'app-root',
@@ -20,14 +15,13 @@ export interface NavRoute {
 })
 export class AppComponent implements OnInit, AfterViewInit {
     title = 'syncwatch-frontend';
-    isCollapsed = true;
     logoutLoading = false;
 
     @ViewChild('modal')
     modal!: ModalComponent;
 
-    navStartRoutes!: NavRoute[];
-    navEndRoutes!: NavRoute[];
+    navStartRoutes!: { path: string, title: string }[];
+    navEndRoutes!: { path: string, title: string }[];
 
     constructor(
         public authService: AuthService,
