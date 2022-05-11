@@ -1,19 +1,20 @@
-<p>home works!</p>
-<button type="button" class="btn btn-primary" (click)="displayService.requestFullscreen()">
-    Enter Fullscreen
-</button>
-<button type="button" class="btn btn-primary" (click)="displayService.exitFullscreen()">
-    Exit Fullscreen
-</button>
-<button type="button" class="btn btn-primary" (click)="displayService.lockOrientation('landscape')">
-    Lock Rotation landscape
-</button>
-<button type="button" class="btn btn-primary" (click)="displayService.lockOrientation('portrait')">
-    Lock Rotation portrait
-</button>
-<button type="button" class="btn btn-primary" (click)="displayService.unlockOrientation()">
-    Unlock Rotation
-</button>
-<div *ngFor="let _ of [].constructor(30)" class="bg-danger mt-2 m-safe-x w-100">
-    SAFE BOX
+<div class="row">
+    <div class="col-12 col-md-3">
+        <h3 class="text-center mt-3">Rooms</h3>
+        <div class="card border-primary w-auto text-center" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">Room 1</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Game Of Thrones</h6>
+                        <ul class="list-group rounded-2 py-3 px-2 mb-2 list-group-flush">
+                            <li class="list-group-item">Jakob</li>
+                            <li class="list-group-item">Florian</li>
+                            <li class="list-group-item">Lukas </li>
+                        </ul>
+                <a href="#" class="card-link btn btn-primary">Join</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-9" style="background-color: blue;">
+        Column 2
+    </div>
 </div>

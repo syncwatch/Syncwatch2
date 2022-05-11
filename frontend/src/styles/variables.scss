@@ -24,6 +24,7 @@ $blue-300: #3EDDFF !default;
 $blue-400: #3EAEFF !default;
 $blue-500: #3E7DFF !default;
 $blue-600: #3E47FF !default;
+$blue-bg-light: #1b1d28 !default;
 
 $blue:    $blue-500 !default;
 $indigo:  #6610f2 !default;
@@ -64,6 +65,7 @@ $link-color:                              $body-color !default;
 
 $border-width:                0 !default;
 
+$border-radius-lg:            .8rem !default;
 $border-radius:               .6rem !default;
 $border-radius-sm:            .25rem !default;
 
@@ -155,7 +157,7 @@ $progress-bg:                       $input-disabled-bg !default;
 // List group
 
 $list-group-color:                  $white !default;
-$list-group-bg:                     $input-disabled-bg !default;
+$list-group-bg:                     $blue-bg-light !default;
 $list-group-hover-bg:               $pink !default;
 $list-group-disabled-color:         $text-muted !default;
 $list-group-action-color:           $body-color !default;

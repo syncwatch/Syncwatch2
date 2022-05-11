@@ -285,6 +285,7 @@ legend {
 
 .card {
   background-color: transparent;
+  border-radius: $border-radius-lg;
   @include text-shadow-sm($white);
 
   @each $color, $value in $theme-colors {
