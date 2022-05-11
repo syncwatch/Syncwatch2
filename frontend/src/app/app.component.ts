@@ -22,6 +22,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     navStartRoutes!: { path: string, title: string }[];
     navEndRoutes!: { path: string, title: string }[];
+    navMobileRoutes!: { path: string, emoji: string }[];
 
     constructor(
         public authService: AuthService,
@@ -36,6 +37,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private reloadNavRoutes() {
         this.navStartRoutes = this.router.config.filter(route => route.data && route.data['navTitle'] && !route.data['navEnd']).map<{ path: string, title: string }>(route => { return { path: '/' + route.path, title: '' + route.data!['navTitle'] }; });
         this.navEndRoutes = this.router.config.filter(route => route.data && route.data['navTitle'] && route.data['navEnd']).map<{ path: string, title: string }>(route => { return { path: '/' + route.path, title: '' + route.data!['navTitle'] }; });
+        this.navMobileRoutes = this.router.config.filter(route => route.data && route.data['navMobileEmoji']).map<{ path: string, emoji: string }>(route => { return { path: '/' + route.path, emoji: '' + route.data!['navMobileEmoji'] }; });
     }
 
     ngOnInit(): void {
