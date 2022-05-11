@@ -31,6 +31,7 @@ import { serviceWorkerConfig } from './shared/worker/service.worker.config';
 import { FullscreenGuardService } from './shared/display/fullscreen-guard.service';
 import { NoFullscreenGuardService } from './shared/display/no-fullscreen-guard.service';
 import { NavbarDesktopComponent } from './components/navbar-desktop/navbar-desktop.component';
+import { NavbarMobileComponent } from './components/navbar-mobile/navbar-mobile.component';
 
 @NgModule({
     declarations: [
@@ -42,6 +43,7 @@ import { NavbarDesktopComponent } from './components/navbar-desktop/navbar-deskt
         ModalComponent,
         DownloadsComponent,
         NavbarDesktopComponent,
+        NavbarMobileComponent,
     ],
     imports: [
         BrowserModule,

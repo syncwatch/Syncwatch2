@@ -1,4 +1,11 @@
 <div>
+    <button *ngIf="syncService.isOnline()" class="btn btn-secondary" (click)="logout()" [disabled]="logoutLoading">
+        <span *ngIf="logoutLoading" class="spinner-border spinner-border-sm" role="status"></span>
+        Logout
+    </button>
+    <button *ngIf="!syncService.isOnline()" class="btn btn-secondary" (click)="goOnline()" [disabled]="!syncService.isVoluntaryOffline()">
+        Go Online
+    </button>
     <h4>Sessions</h4>
     <div>
         <button class="btn btn-danger" type="button" (click)="deleteSessions()">Delete All Sessions</button>
