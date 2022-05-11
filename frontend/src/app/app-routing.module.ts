@@ -10,6 +10,7 @@ import { OnlineGuardService as OnlineGuard } from './shared/sync/online-guard.se
 import { NoFullscreenGuardService as NoFullscreenGuard } from './shared/display/no-fullscreen-guard.service';
 // remove this for lazy loading
 import { MoviesModule } from './modules/movies/movies.module';
+import { ComicsModule } from './modules/comics/comics.module';
 
 const routes: Routes = [
     {
@@ -26,7 +27,7 @@ const routes: Routes = [
         path: 'home',
         component: HomeComponent,
         canActivate: [AuthGuard, NoFullscreenGuard],
-        data: {navTitle: 'Home'}
+        data: {navTitle: 'Home', navMobileEmoji: 'home'}
     },
         // lazy loading not really working with Service Worker
     // {
@@ -39,7 +40,13 @@ const routes: Routes = [
         path: 'movies',
         loadChildren: () => MoviesModule,
         canActivate: [AuthGuard],
-        data: {navTitle: 'Movies'}
+        data: {navTitle: 'Movies', navMobileEmoji: 'movie'}
+    },
+    {
+        path: 'comics',
+        loadChildren: () => ComicsModule,
+        canActivate: [AuthGuard],
+        data: {navTitle: 'Comics', navMobileEmoji: 'comic'}
     },
     {
         path: 'upload',
@@ -57,7 +64,7 @@ const routes: Routes = [
         path: 'profile',
         component: ProfileComponent,
         canActivate: [AuthGuard, OnlineGuard, NoFullscreenGuard],
-        data: {navTitle: 'Profile', navEnd: true}
+        data: {navTitle: 'Profile', navEnd: true, navMobileEmoji: 'profile'}
     },
     {
         path: '**',
