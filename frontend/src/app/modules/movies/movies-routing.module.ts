@@ -18,6 +18,11 @@ const routes: Routes = [
         canActivate: [FullscreenGuard],
     },
     {
+        path: 'watch',
+        component: WatchComponent,
+        canActivate: [FullscreenGuard],
+    },
+    {
         path: ':movie_type/:id',
         component: OverviewComponent,
         canActivate: [FullscreenGuard],

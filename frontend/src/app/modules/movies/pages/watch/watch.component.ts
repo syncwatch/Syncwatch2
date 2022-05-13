@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Socket } from 'ngx-socket-io';
-import { map, Observable, switchMap } from 'rxjs';
 import { MovieMeta } from 'src/app/shared/movie/movie-meta';
 import { MovieService } from 'src/app/shared/movie/movie.service';
 import { WatchSocket } from 'src/app/shared/sockets/watch.socket';
@@ -24,27 +22,29 @@ export class WatchComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.route.paramMap.pipe(
-            switchMap(params => this.movieService.getMovieById(params.get('id')!))
-        ).subscribe((movie) => {
-            if (movie === undefined) {
-                this.movie = 2;
-            } else {
-                this.movie = movie;
-                this.socket.emit('create-room', this.movie.id);
-            }
-            this.ref.detectChanges();
+        this.route.queryParamMap.subscribe((queryParams) => {
+            const room = queryParams.get('room');
+            this.route.paramMap.subscribe((params) => {
+                const movie_id = params.get('id');
+                if (room === null) {
+                    this.socket.emit('create-room', movie_id);
+                } else {
+                    this.socket.emit('join-room', room, movie_id);
+                }
+            });
+
         });
 
-        this.socket.fromEvent<string>('join-room').subscribe((room_id) => {
-            this.router.navigate([], {
-                relativeTo: this.route,
-                queryParams: {
-                    room: room_id
-                },
-                queryParamsHandling: 'merge',
-            });
-            console.log('join', room_id);
+        this.socket.on('join-room', (room_id: string) => {
+            console.log('join-room', room_id);
+
+            // this.router.navigate([], {
+            //     relativeTo: this.route,
+            //     queryParams: {
+            //         room: room_id
+            //     },
+            //     queryParamsHandling: 'merge',
+            // });
         });
     }
 

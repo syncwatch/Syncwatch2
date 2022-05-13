@@ -76,3 +76,14 @@ class SubtitleNotFoundException(NotFoundException):
         self.description = 'subtitle_not_found_exception'
         super().__init__(*args, **kwargs)
 
+
+class CreatingExistingRoomException(WrongInputException):
+    def __init__(self, *args, **kwargs):
+        self.description = 'creating_existing_room_exception'
+        super().__init__(*args, **kwargs)
+
+
+class RoomNotFoundException(NotFoundException):
+    def __init__(self, *args, **kwargs):
+        self.description = 'room_not_found_exception'
+        super().__init__(*args, **kwargs)

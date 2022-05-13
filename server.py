@@ -14,6 +14,7 @@ from sqlalchemy.engine import Row
 from helpers.crypt import HashDealer, TokenGenerator
 from helpers.data_manager import DataManager
 from helpers.db import Database, DeviceSession, User
+from helpers.room_manager import RoomManager
 from helpers.socket_watch import SocketWatch
 
 from helpers.exceptions import LoginMissingException, LoginIncorrectException, DuplicateSessionTokenException, \
@@ -223,7 +224,7 @@ class WebServer(threading.Thread):
             root_path=self.root_path,
         )
         self.io = SocketIO(self.app)
-        SocketWatch(self, self.io)
+        SocketWatch(self, self.io, RoomManager())
 
         self.app.json_encoder = create_json_encoder()
 
