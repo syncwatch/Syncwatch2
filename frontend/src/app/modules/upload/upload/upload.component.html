@@ -1,1 +1,18 @@
-<p>upload works!</p>
+<div class="m-safe-x">
+    <div class="container">
+        <div class="btn-group my-3">
+            <button [class.active]="remoteUpload" class="btn btn-primary" (click)="remoteUpload = true">Remote</button>
+            <button [class.active]="!remoteUpload" class="btn btn-primary" (click)="remoteUpload = false">Local</button>
+        </div>
+        <div class="form-group mb-3">
+            <input type="text" placeholder="Search" class="form-control" [formControl]="searchControl">
+        </div>
+        <ng-container *ngIf="searchResults$ | async as results; else loading">
+            {{ results | json }}
+        </ng-container>
+        <ng-template #loading>
+            <div *ngIf="searchControl.valid" class="spinner-border" role="status">
+            </div>
+        </ng-template>
+    </div>
+</div>
