@@ -29,7 +29,7 @@
 </nav> -->
 
 <nav class="bg-gray-800">
-    <div class="mx-auto px-2 sm:px-6 lg:px-8">
+    <div class="mx-auto px-6 lg:px-8">
         <div class="relative flex items-center justify-between h-16">
             <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
 <!-- LOGO -->
@@ -67,6 +67,9 @@
                             fill="currentColor" />
                     </svg>
                     Logout</button>
+                <button *ngIf="!syncService.isOnline()" class="flex items-center text-gray-200 bg-cyan-500 hover:bg-cyan-400 hover:text-white disabled:cursor-not-allowed disabled:bg-cyan-900 px-3 py-2 rounded-md text-sm font-medium" (click)="onGoOnline.next()" [disabled]="!syncService.isVoluntaryOffline()">
+                    Go Online
+                </button>
             </div>
         </div>
     </div>
