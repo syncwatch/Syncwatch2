@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './shared/auth/auth.service';
@@ -51,7 +50,6 @@ import { NavbarMobileComponent } from './components/navbar-mobile/navbar-mobile.
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
-        NgbModule,
         ServiceWorkerModule.register(serviceWorkerConfig.serviceWorkerUrl, {
             enabled: serviceWorkerConfig.enabled,
             // Register the ServiceWorker as soon as the application is stable

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'app-modal',
@@ -17,7 +16,7 @@ export class ModalComponent implements OnInit {
     @ViewChild('modalContent')
     modalContent!: ElementRef;
 
-    constructor(private modalService: NgbModal) { }
+    constructor() { }
 
     ngOnInit(): void {
     }
@@ -26,7 +25,8 @@ export class ModalComponent implements OnInit {
         this._bodyHtml = bodyHtml;
         this._title = title;
         this._buttons = buttons;
-        return this.modalService.open(this.modalContent, { ariaLabelledBy: 'modal-basic-title' }).result;
+        return new Promise(() => {});
+        // return this.modalService.open(this.modalContent, { ariaLabelledBy: 'modal-basic-title' }).result;
     }
 }
 

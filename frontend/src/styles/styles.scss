@@ -1,17 +1,6 @@
-/* Importing Variables SCSS file. */
-@import './variables.scss';
-
-/* Importing Bootstrap SCSS file. */
-@import '~bootstrap/scss/bootstrap';
-
-/* Importing Bootswatch SCSS file. */
-@import './bootswatch.scss';
-
-/* Importing emojis SCSS file. */
-@import './emojis.scss';
-
-/* Import video js file */
-@import '~video.js/dist/video-js.min.css';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 html,
 body {
