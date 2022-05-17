@@ -2,6 +2,9 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+// Import Emojis
+@import "./emojis.scss";
+
 html,
 body {
     min-height: 100%;

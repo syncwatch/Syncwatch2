@@ -1,5 +1,5 @@
 <app-navbar-desktop
-    class="d-none d-sm-block"
+    class="hidden sm:block"
     *ngIf="authService.isLoggedIn()"
     [navStartRoutes]="navStartRoutes"
     [navEndRoutes]="navEndRoutes"
@@ -12,7 +12,7 @@
     <router-outlet></router-outlet>
 </div>
 <app-navbar-mobile
-    class="d-block d-sm-none"
+    class="block sm:hidden"
     *ngIf="authService.isLoggedIn()"
     [navMobileRoutes]="navMobileRoutes">
 </app-navbar-mobile>
