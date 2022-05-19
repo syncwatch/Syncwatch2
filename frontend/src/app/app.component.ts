@@ -49,7 +49,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                             ${event.reason}</br>Please reload the page.`,
                 'An error occured',
                 [
-                    { class: '', innerHtml: 'Reload', result: 'reload' }
+                    { class: 'btn btn-secondary', innerHtml: 'Reload', result: 'reload' }
                 ]).then((result) => {
                     if (result == 'reload') window.location.reload();
                 });
@@ -63,7 +63,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                     this.modal.open(`Please update from version=[${evt.currentVersion} to latestVersion=[${evt.latestVersion}]`,
                         'Update available',
                         [
-                            { class: '', innerHtml: 'Reload', result: 'reload' }
+                            { class: 'btn btn-secondary', innerHtml: 'Reload', result: 'reload' }
                         ]).then((result) => {
                             if (result == 'reload') window.location.reload();
                         });
@@ -76,7 +76,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                 this.modal.open(`We want to store persistant data ok!`,
                     'Store data',
                     [
-                        { class: '', innerHtml: 'Grant', result: 'grant' }
+                        { class: 'btn btn-secondary', innerHtml: 'Grant', result: 'grant' }
                     ]).then((result) => {
                         if (result == 'grant') this.storageService.persist();
                     });
