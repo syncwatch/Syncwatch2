@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { firstValueFrom, Subject } from 'rxjs';
 
 @Component({
     selector: 'app-modal',
@@ -10,23 +11,29 @@ export class ModalComponent implements OnInit {
     _bodyHtml = '';
     _title = '';
     _buttons: Button[] = [];
+    opened = false;
 
-    onClose = new EventEmitter<any>();
+    resultSubject = new Subject<string>();
 
-    @ViewChild('modalContent')
-    modalContent!: ElementRef;
-
-    constructor() { }
+    constructor(
+        private ref: ChangeDetectorRef
+    ) {}
 
     ngOnInit(): void {
     }
 
-    open(bodyHtml: string, title: string = 'Modal Title', buttons: Button[]): Promise<any> {
+    open(bodyHtml: string, title: string = 'Modal Title', buttons: Button[]): Promise<string> {
+        this.opened = true;
         this._bodyHtml = bodyHtml;
         this._title = title;
         this._buttons = buttons;
-        return new Promise(() => {});
-        // return this.modalService.open(this.modalContent, { ariaLabelledBy: 'modal-basic-title' }).result;
+        this.ref.detectChanges();
+        return firstValueFrom(this.resultSubject);
+    }
+
+    buttonClick(button: Button) {
+        this.opened = false;
+        this.resultSubject.next(button.result);
     }
 }
 
