@@ -1,0 +1,19 @@
+.btn {
+    @apply px-3 py-2 rounded-md text-sm font-medium disabled:cursor-not-allowed;
+}
+
+.btn-transparent {
+    @apply text-gray-300 hover:bg-gray-700 hover:text-white;
+}
+
+.btn-primary {
+    @apply bg-blue-500 hover:bg-blue-700 text-white;
+}
+
+.btn-secondary {
+    @apply text-gray-200 bg-cyan-500 hover:bg-cyan-400 hover:text-white disabled:bg-cyan-900;
+}
+
+.btn-danger {
+    @apply text-gray-200 bg-red-700 hover:bg-red-600 hover:text-white disabled:bg-red-900;
+}

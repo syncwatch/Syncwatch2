@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
-import { AuthService } from 'src/app/shared/auth/auth.service';
-import { SyncService } from 'src/app/shared/sync/sync.service';
+import { Observable, switchMap, tap, } from 'rxjs';
 import { Session } from 'src/app/shared/user/session';
 import { UserService } from 'src/app/shared/user/user.service';
 
@@ -19,8 +17,6 @@ export class ProfileComponent implements OnInit {
     constructor(
         private userService: UserService,
         private router: Router,
-        public syncService: SyncService,
-        private authService: AuthService,
     ) { }
 
     ngOnInit(): void {
@@ -43,24 +39,5 @@ export class ProfileComponent implements OnInit {
         this.device_sessions$ = this.userService.deleteSessionById(id, is_current).pipe(
             switchMap(() => this.userService.sessions())
         );
-    }
-
-    logout() {
-        this.logoutLoading = true;
-        this.authService.logout().pipe(
-            catchError(err => {
-                this.router.navigate(['login']);
-                this.logoutLoading = false;
-                return throwError(() => err);
-            }),
-        ).subscribe(() => {
-            this.logoutLoading = false;
-            this.router.navigate(['login']);
-        });
-    }
-
-    goOnline() {
-        this.syncService.setVoluntaryOffline(false);
-        this.router.navigate(['login']);
     }
 }

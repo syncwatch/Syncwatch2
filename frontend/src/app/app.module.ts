@@ -31,6 +31,8 @@ import { FullscreenGuardService } from './shared/display/fullscreen-guard.servic
 import { NoFullscreenGuardService } from './shared/display/no-fullscreen-guard.service';
 import { NavbarDesktopComponent } from './components/navbar-desktop/navbar-desktop.component';
 import { NavbarMobileComponent } from './components/navbar-mobile/navbar-mobile.component';
+import { LogoutButtonComponent } from './components/logout-button/logout-button.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +45,8 @@ import { NavbarMobileComponent } from './components/navbar-mobile/navbar-mobile.
         DownloadsComponent,
         NavbarDesktopComponent,
         NavbarMobileComponent,
+        LogoutButtonComponent,
+        LoadingSpinnerComponent,
     ],
     imports: [
         BrowserModule,

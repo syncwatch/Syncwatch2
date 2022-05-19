@@ -1,5 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { SyncService } from 'src/app/shared/sync/sync.service';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-navbar-desktop',
@@ -11,23 +10,12 @@ export class NavbarDesktopComponent implements OnInit {
     isCollapsed = true;
 
     @Input()
-    logoutLoading = false;
+    navStartRoutes: { path: string, title: string }[] = [];
 
     @Input()
-    navStartRoutes: {path: string, title: string}[] = [];
+    navEndRoutes: { path: string, title: string }[] = [];
 
-    @Input()
-    navEndRoutes: {path: string, title: string}[] = [];
-
-    @Output()
-    onLogout = new EventEmitter<void>();
-
-    @Output()
-    onGoOnline = new EventEmitter<void>();
-
-    constructor(
-        public syncService: SyncService
-    ) { }
+    constructor() { }
 
     ngOnInit(): void {
     }
