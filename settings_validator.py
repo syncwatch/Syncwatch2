@@ -10,7 +10,7 @@ def validate_global_settings(settings: Dict):
     current_dir = os.path.dirname(os.path.realpath(__file__))
 
     if 'API_BASE' not in settings or not isinstance(settings['API_BASE'], str):
-        settings['API_BASE'] = '/fap'
+        settings['API_BASE'] = 'fap'
     if 'WEBSERVER_DEBUG' not in settings or not settings['WEBSERVER_DEBUG']:
         settings['WEBSERVER_DEBUG'] = False
     if 'WEBSERVER_STATIC_PATH' not in settings or not isinstance(settings['WEBSERVER_STATIC_PATH'], str):
