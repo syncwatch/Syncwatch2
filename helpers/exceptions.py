@@ -1,65 +1,45 @@
-import werkzeug
+from fastapi import HTTPException
 
 
 class DuplicateSessionTokenException(Exception):
     pass
 
 
-class WrongInputException(werkzeug.exceptions.HTTPException):
-    code = 400
+class WrongInputException(HTTPException):
+    def __init__(self, status_code=400, detail='wrong_input'):
+        super().__init__(status_code, detail)
 
 
-class UnauthorizedException(werkzeug.exceptions.HTTPException):
-    code = 401
+class UnauthorizedException(HTTPException):
+    def __init__(self, status_code=401, detail='unauthorized'):
+        super().__init__(status_code, detail)
 
 
-class NotFoundException(werkzeug.exceptions.HTTPException):
-    code = 404
-
-
-class LoginMissingException(WrongInputException):
-    def __init__(self, *args, **kwargs):
-        self.description = 'login_data_missing_exception'
-        super().__init__(*args, **kwargs)
+class NotFoundException(HTTPException):
+    def __init__(self, status_code=404, detail='not_found'):
+        super().__init__(status_code, detail)
 
 
 class LoginIncorrectException(WrongInputException):
-    def __init__(self, *args, **kwargs):
-        self.description = 'login_data_wrong_exception'
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__(detail='login_data_wrong_exception')
 
 
 class SessionUnauthorizedException(UnauthorizedException):
-    def __init__(self, *args, **kwargs):
-        self.description = 'session_unauthorized_exception'
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__(detail='session_unauthorized_exception')
 
 
 class SessionExpiredException(UnauthorizedException):
-    def __init__(self, *args, **kwargs):
-        self.description = 'session_expired_exception'
-        super().__init__(*args, **kwargs)
-
-
-class MovieIdMissingException(WrongInputException):
-    def __init__(self, *args, **kwargs):
-        self.description = 'movie_id_missing_exception'
-        super().__init__(*args, **kwargs)
-
-
-class ThumbnailIdMissingException(WrongInputException):
-    def __init__(self, *args, **kwargs):
-        self.description = 'thumbnail_id_missing_exception'
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__(detail='session_expired_exception')
 
 
 class MovieNotFoundException(NotFoundException):
-    def __init__(self, *args, **kwargs):
-        self.description = 'movie_not_found_exception'
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__(detail='movie_not_found_exception')
 
 
 class ThumbnailNotFoundException(NotFoundException):
-    def __init__(self, *args, **kwargs):
-        self.description = 'thumbnail_not_found_exception'
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__(detail='thumbnail_not_found_exception')
