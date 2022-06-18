@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from flask.json import JSONEncoder
 from sqlalchemy.engine import Row
 
 from helpers.db import Representable
@@ -27,13 +26,3 @@ def to_simple_type(o):
         return (to_simple_type(x) for x in o)
 
     raise DictConversionException()
-
-
-def create_json_encoder():
-    class CustomJSONEncoder(JSONEncoder):
-        def default(self, o):
-            try:
-                return to_simple_type(o)
-            except DictConversionException:
-                return JSONEncoder.default(self, o)
-    return CustomJSONEncoder
