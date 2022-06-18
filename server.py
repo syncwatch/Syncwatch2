@@ -7,7 +7,7 @@ import uvicorn
 from fastapi import Body, FastAPI, Header
 from sqlalchemy.engine import Row
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import Response, FileResponse, JSONResponse, RedirectResponse
+from fastapi.responses import Response, FileResponse, RedirectResponse
 
 from helpers.crypt import HashDealer, TokenGenerator
 from helpers.data_manager import DataManager
@@ -15,7 +15,7 @@ from helpers.db import Database, DeviceSession, User
 
 from helpers.exceptions import LoginIncorrectException, DuplicateSessionTokenException, SessionUnauthorizedException, \
     SessionExpiredException, NotFoundException
-from helpers.json_encoder import to_simple_type
+from helpers.json_encoder import CustomJSONResponse
 from settings_validator import validate_global_settings
 
 PERMISSIONS = [
@@ -110,7 +110,7 @@ class Server:
                 except DuplicateSessionTokenException:
                     pass
 
-            return JSONResponse({
+            return CustomJSONResponse({
                 'msg': 'success',
                 'session_token': session_token,
                 'expires': expires
@@ -121,7 +121,7 @@ class Server:
                 authorization: str = Header(),
         ) -> Response:
             await self.get_session(authorization)
-            return JSONResponse({
+            return CustomJSONResponse({
                 'msg': 'success'
             })
 
@@ -131,7 +131,7 @@ class Server:
         ) -> Response:
             session = await self.get_session(authorization)
             self.db.delete_device_session(session[0].session_token)
-            return JSONResponse({
+            return CustomJSONResponse({
                 'msg': 'success'
             })
 
@@ -144,7 +144,7 @@ class Server:
             def _map(x: Row[int, str]):
                 return {'id': x.id, 'device_info': x.device_info, 'is_current': session[0].id == x.id}
 
-            return JSONResponse({
+            return CustomJSONResponse({
                 'msg': 'success',
                 'sessions': list(map(_map, self.db.get_user_sessions(session[0].user_id, int(time.time()))))
             })
@@ -159,7 +159,7 @@ class Server:
                 self.db.delete_user_sessions(session[0].user_id)
             else:
                 self.db.delete_user_session(session[0].user_id, int(session_id))
-            return JSONResponse({
+            return CustomJSONResponse({
                 'msg': 'success'
             })
 
@@ -169,9 +169,9 @@ class Server:
                 authorization: str = Header(),
         ) -> Response:
             session = await self.get_session(authorization)
-            return JSONResponse({
+            return CustomJSONResponse({
                 'msg': 'success',
-                'movie': to_simple_type(self.data_manager.movie.get_movie_meta_by_id(id))
+                'movie': self.data_manager.movie.get_movie_meta_by_id(id)
             })
 
         @self.app.get(f'/{api_base}/movies')
@@ -179,9 +179,9 @@ class Server:
                 authorization: str = Header(),
         ) -> Response:
             session = await self.get_session(authorization)
-            return JSONResponse({
+            return CustomJSONResponse({
                 'msg': 'success',
-                'movies': to_simple_type(self.data_manager.movie.get_movies_meta())
+                'movies': self.data_manager.movie.get_movies_meta()
             })
 
         @self.app.get(f'/{api_base}/thumbnail')
