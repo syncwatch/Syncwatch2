@@ -5,7 +5,7 @@ from sqlalchemy.engine import Row
 from helpers.db import Representable
 
 
-class DictConversionException(TypeError):
+class SimpleConversionException(TypeError):
     pass
 
 
@@ -25,4 +25,4 @@ def to_simple_type(o):
     if isinstance(o, tuple):
         return (to_simple_type(x) for x in o)
 
-    raise DictConversionException()
+    raise SimpleConversionException()
