@@ -219,13 +219,6 @@ class Server:
                 return FileResponse(os.path.join(self.static_path, path))
             return await send_root()
 
-        # pages = [
-        #     Page(path=f"{api_base}/stream", get_func=self.stream),
-        # ]
-        #
-        # for page in pages:
-        #     page.add_to_app(self.app)
-
     def run(self) -> None:
         uvicorn.run(self.app, host=self.HOST, port=self.PORT)
 
