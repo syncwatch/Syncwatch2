@@ -5,9 +5,9 @@ import re
 from logging import Logger
 from typing import List
 
-import werkzeug
-from flask import request, send_file
 from mimetypes import guess_type
+
+from fastapi.responses import FileResponse, Response
 
 from helpers.crypt import hash_file, hash_string
 from helpers.data_manager_part import DataManagerPart
@@ -150,13 +150,17 @@ class MovieManager(DataManagerPart):
     def get_movies_meta(self) -> List[MovieMeta]:
         return self.db.get_movie_meta_by_sw_type_prefix('video-')
 
-    def get_thumbnail(self, tid: str) -> werkzeug.Response:
+    def get_thumbnail(self, tid: str) -> Response:
         thumbnail = self.get_movie_meta_by_id(tid)
         if thumbnail is None or not thumbnail.sw_type == 'thumbnail':
             raise ThumbnailNotFoundException()
-        return send_file(os.path.join(self.data_path, thumbnail.relative_path), mimetype=thumbnail.mime_type)
+        return FileResponse(os.path.join(self.data_path, thumbnail.relative_path), media_type=thumbnail.mime_type)
 
-    def stream_movie(self, mid: str) -> werkzeug.Response:
+    def stream_movie(
+            self,
+            mid: str,
+            range_header: str = None,
+    ) -> Response:
         movie = self.get_movie_meta_by_id(mid)
         if movie is None or not movie.sw_type.startswith('video-'):
             raise MovieNotFoundException()
@@ -166,7 +170,6 @@ class MovieManager(DataManagerPart):
         start = 0
         length = file_size
 
-        range_header = request.headers.get('Range', None)
         if range_header:
             m = re.search('bytes=([0-9]+)-([0-9]*)', range_header)
             g = m.groups()
@@ -188,17 +191,14 @@ class MovieManager(DataManagerPart):
         with open(full_path, 'rb') as f:
             f.seek(start)
             chunk = f.read(length)
-
-        rv = werkzeug.Response(
-            chunk,
-            206 if length < file_size else 200,
+        return Response(
+            content=chunk,
+            status_code=206 if length < file_size else 200,
             headers={
                 'Content-Range': 'bytes {0}-{1}/{2}'.format(start, start + length - 1, file_size),
                 'Accept-Ranges': 'bytes',
                 'Content-Type': movie.mime_type,
                 'Content-Disposition': 'inline',
-                'Content-Length': length,
+                'Content-Length': str(length),
             },
-            direct_passthrough=True
         )
-        return rv
