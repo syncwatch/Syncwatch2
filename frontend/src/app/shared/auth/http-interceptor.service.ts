@@ -1,7 +1,7 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class HttpInterceptorService implements HttpInterceptor {
                     this.authService.clearStorage();
                     this.router.navigate(['login']);
                 }
-                return throwError(() => err);
+                throw err;
             })
         );
     }

@@ -1,4 +1,4 @@
-<button *ngIf="syncService.isOnline()" class="flex items-center btn btn-danger" (click)="logout()"
+<button *ngIf="syncService.isOnline()" class="flex items-center btn btn-error" (click)="logout()"
     [disabled]="logoutLoading">
     <app-loading-spinner *ngIf="logoutLoading"></app-loading-spinner>
     Logout

@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
 import { AuthService } from 'src/app/shared/auth/auth.service';
 import { SyncService } from 'src/app/shared/sync/sync.service';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+    styleUrls: ['./login.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {
 
@@ -19,13 +19,14 @@ export class LoginComponent implements OnInit {
     constructor(
         private authService: AuthService,
         private router: Router,
-        public syncService: SyncService
+        public syncService: SyncService,
+        private ref: ChangeDetectorRef,
     ) {
 
         this.loginForm = new FormGroup({
             username: new FormControl('', Validators.required),
             password: new FormControl('', Validators.required),
-            stay_signedin: new FormControl(false),
+            staySignedin: new FormControl(false),
         });
     }
 
@@ -56,15 +57,19 @@ export class LoginComponent implements OnInit {
 
         this.loading = true;
 
-        this.authService.login(val.username, val.password, val.stay_signedin)
-            .pipe(
-                catchError(err => {
-                    this.errorMessage = err.error.description;
-                    this.loading = false;
-                    return throwError(() => err);
-                })
-            ).subscribe(() => {
+        this.authService.login(val.username, val.password, val.staySignedin).subscribe({
+            next: () => {
                 this.router.navigate(['home']);
-            });
+            },
+            error: (err) => {
+                if (err && err.error && err.error.detail) {
+                    this.errorMessage = err.error.detail;
+                } else {
+                    this.errorMessage = 'Unknown Error';
+                }
+                this.loading = false;
+                this.ref.detectChanges();
+            },
+        });
     }
 }

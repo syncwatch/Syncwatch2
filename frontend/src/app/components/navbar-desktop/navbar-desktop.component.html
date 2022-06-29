@@ -1,29 +1,18 @@
-<nav class="bg-gray-800 shadow-2xl">
-    <div class="m-safe-t m-safe-x px-6 lg:px-8">
-        <div class="relative flex items-center justify-between h-16">
-            <div class="flex-1 flex items-stretch justify-start">
-                <!-- LOGO -->
-                <div class="flex-shrink-0 flex items-center">
-                    <app-logo [text]="false"></app-logo>
-                </div>
-                <!-- NAV BUTTONS -->
-                <div class="items-center flex ml-6">
-                    <div class="flex space-x-4">
-                        <a class="btn btn-transparent" *ngFor="let route of navStartRoutes"
-                            routerLinkActive="bg-gray-900 text-white" [routerLink]="route.path">{{route.title}}</a>
-                    </div>
-                </div>
-            </div>
-            <div class="inset-y-0 right-0 flex items-center static inset-auto ml-6 pr-0">
-                <!-- LOGOUT BUTTON -->
-                <div class="items-center flex ml-6 mr-6">
-                    <div class="flex space-x-4">
-                        <a class="btn btn-transparent" *ngFor="let route of navEndRoutes"
-                            routerLinkActive="bg-gray-900 text-white" [routerLink]="route.path">{{route.title}}</a>
-                    </div>
-                </div>
-                <app-logout-button></app-logout-button>
-            </div>
-        </div>
+<nav class="navbar bg-base-100">
+    <div class="flex-1 m-safe-t m-safe-l">
+        <app-logo [text]="false"></app-logo>
+        <ul class="menu menu-horizontal p-0 gap-2">
+            <li *ngFor="let route of navStartRoutes">
+                <a routerLinkActive="active" [routerLink]="route.path">{{route.title}}</a>
+            </li>
+        </ul>
+    </div>
+    <div class="flex-none m-safe-t m-safe-l gap-2">
+        <ul class="menu menu-horizontal p-0 gap-2">
+            <li *ngFor="let route of navEndRoutes">
+                <a routerLinkActive="active" [routerLink]="route.path">{{route.title}}</a>
+            </li>
+        </ul>
+        <app-logout-button></app-logout-button>
     </div>
 </nav>

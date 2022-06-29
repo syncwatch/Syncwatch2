@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
 import { AuthService } from 'src/app/shared/auth/auth.service';
 import { SyncService } from 'src/app/shared/sync/sync.service';
 
@@ -23,15 +22,15 @@ export class LogoutButtonComponent implements OnInit {
 
     logout() {
         this.logoutLoading = true;
-        this.authService.logout().pipe(
-            catchError(err => {
-                this.router.navigate(['login']);
+        this.authService.logout().subscribe({
+            next: () => {
                 this.logoutLoading = false;
-                return throwError(() => err);
-            }),
-        ).subscribe(() => {
-            this.logoutLoading = false;
-            this.router.navigate(['login']);
+                this.router.navigate(['login']);
+            },
+            error: (err) => {
+                this.logoutLoading = false;
+                this.router.navigate(['login']);
+            },
         });
     }
 

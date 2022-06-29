@@ -12,7 +12,7 @@ import { UserService } from 'src/app/shared/user/user.service';
 export class ProfileComponent implements OnInit {
     logoutLoading = false;
 
-    device_sessions$!: Observable<Session[]>;
+    deviceSessions$!: Observable<Session[]>;
 
     constructor(
         private userService: UserService,
@@ -20,23 +20,23 @@ export class ProfileComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.device_sessions$ = this.userService.sessions();
+        this.deviceSessions$ = this.userService.sessions();
     }
 
     deleteSessions() {
-        this.device_sessions$ = this.userService.deleteSessions().pipe(
+        this.deviceSessions$ = this.userService.deleteSessions().pipe(
             tap(() => this.router.navigate(['login'])),
         );
     }
 
     deleteSessionById(id: number, is_current: boolean) {
         if (is_current) {
-            this.device_sessions$ = this.userService.deleteSessionById(id, is_current).pipe(
+            this.deviceSessions$ = this.userService.deleteSessionById(id, is_current).pipe(
                 tap(() => this.router.navigate(['login'])),
             );
             return;
         }
-        this.device_sessions$ = this.userService.deleteSessionById(id, is_current).pipe(
+        this.deviceSessions$ = this.userService.deleteSessionById(id, is_current).pipe(
             switchMap(() => this.userService.sessions())
         );
     }

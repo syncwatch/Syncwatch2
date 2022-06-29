@@ -33,6 +33,7 @@ import { NavbarDesktopComponent } from './components/navbar-desktop/navbar-deskt
 import { NavbarMobileComponent } from './components/navbar-mobile/navbar-mobile.component';
 import { LogoutButtonComponent } from './components/logout-button/logout-button.component';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
+import { BypassSanitizePipe } from './shared/bypass-sanitize.pipe';
 
 @NgModule({
     declarations: [
@@ -47,6 +48,7 @@ import { LoadingSpinnerComponent } from './components/loading-spinner/loading-sp
         NavbarMobileComponent,
         LogoutButtonComponent,
         LoadingSpinnerComponent,
+        BypassSanitizePipe,
     ],
     imports: [
         BrowserModule,
