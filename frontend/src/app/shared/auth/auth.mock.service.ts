@@ -7,14 +7,17 @@ import { Token } from "./token";
 export class AuthService implements IAuthService {
     private _loggedIn = false;
 
-    login(username: string, password: string, stay_signedin: boolean): Observable<Token> {
+    login(username: string, password: string, staySignedin: boolean): Observable<Token> {
         return of({
             msg: 'success',
             expires: 0,
             session_token: '123',
         }).pipe(
             delay(500),
-            tap(() => {this._loggedIn = true})
+            tap(() => {
+                if (username === 'asd') throw new Error('wrong username');
+                this._loggedIn = true;
+            })
         );
     }
 
@@ -23,7 +26,10 @@ export class AuthService implements IAuthService {
             msg: 'success'
         }).pipe(
             delay(500),
-            tap(() => {this._loggedIn = false})
+            tap(() => {
+                this._loggedIn = false;
+                if (Math.random() > 0.5) throw new Error('random logout error');
+            })
         );
     }
 

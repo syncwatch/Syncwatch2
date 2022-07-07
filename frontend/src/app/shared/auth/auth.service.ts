@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 
 import { api_endpoints } from 'src/environments/environment';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Token } from './token';
 import { IAuthService } from './auth.service.interface';
 import { SyncService } from '../sync/sync.service';
@@ -17,9 +17,9 @@ export class AuthService implements IAuthService {
         return localStorage;
     }
 
-    login(username: string, password: string, stay_signedin: boolean): Observable<Token> {
+    login(username: string, password: string, staySignedin: boolean): Observable<Token> {
         return this.http.post<Token>(api_endpoints.LOGIN_URL, { username, password }).pipe(
-            tap((res: Token) => this.setSession(res, stay_signedin)),
+            tap((res: Token) => this.setSession(res, staySignedin)),
         );
     }
 
@@ -34,7 +34,7 @@ export class AuthService implements IAuthService {
             }).pipe(
                 catchError(err => {
                     this.clearStorage();
-                    return throwError(() => err);
+                    throw err;
                 }),
                 tap(() => this.clearStorage()),
             );
@@ -51,8 +51,8 @@ export class AuthService implements IAuthService {
         return exp === -1 || Math.floor(new Date().getTime() / 1000) < exp;
     }
 
-    private setSession(authResult: Token, stay_signedin: boolean) {
-        localStorage.setItem('stay_signedin', (stay_signedin ? '1' : '0'));
+    private setSession(authResult: Token, staySignedin: boolean) {
+        localStorage.setItem('staySignedin', (staySignedin ? '1' : '0'));
         this.getStorage().setItem('session_token', authResult.session_token);
         this.getStorage().setItem('session_expires', JSON.stringify(authResult.expires));
     }
@@ -64,8 +64,8 @@ export class AuthService implements IAuthService {
     }
 
     private getStaySignedin(): boolean {
-        const stay_signedin = localStorage.getItem("stay_signedin");
-        return stay_signedin === '1';
+        const staySignedin = localStorage.getItem("staySignedin");
+        return staySignedin === '1';
     }
 
     getSessionToken(): string {
@@ -82,6 +82,6 @@ export class AuthService implements IAuthService {
     clearStorage() {
         this.getStorage().removeItem('session_token');
         this.getStorage().removeItem('session_expires');
-        localStorage.removeItem("stay_signedin");
+        localStorage.removeItem("staySignedin");
     }
 }

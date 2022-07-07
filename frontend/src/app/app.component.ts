@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
-import { catchError, filter, map, throwError } from 'rxjs';
+import { filter, map } from 'rxjs';
 import { ModalComponent } from './components/modal/modal.component';
 import { AuthService } from './shared/auth/auth.service';
 import { StorageService } from './shared/storage/storage.service';
@@ -15,7 +15,6 @@ import { SyncService } from './shared/sync/sync.service';
 })
 export class AppComponent implements OnInit, AfterViewInit {
     title = 'syncwatch-frontend';
-    logoutLoading = false;
 
     @ViewChild('modal')
     modal!: ModalComponent;
@@ -87,24 +86,5 @@ export class AppComponent implements OnInit, AfterViewInit {
     @HostListener("window:beforeunload", ["$event"])
     unload() {
         this.authService.unload();
-    }
-
-    goOnline() {
-        this.syncService.setVoluntaryOffline(false);
-        this.router.navigate(['login']);
-    }
-
-    logout() {
-        this.logoutLoading = true;
-        this.authService.logout().pipe(
-            catchError(err => {
-                this.router.navigate(['login']);
-                this.logoutLoading = false;
-                return throwError(() => err);
-            }),
-        ).subscribe(() => {
-            this.logoutLoading = false;
-            this.router.navigate(['login']);
-        });
     }
 }

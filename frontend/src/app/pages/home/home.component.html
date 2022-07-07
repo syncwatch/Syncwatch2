@@ -1,19 +1,141 @@
-<p>home works!</p>
-<button type="button" class="btn btn-primary" (click)="displayService.requestFullscreen()">
-    Enter Fullscreen
-</button>
-<button type="button" class="btn btn-primary" (click)="displayService.exitFullscreen()">
-    Exit Fullscreen
-</button>
-<button type="button" class="btn btn-primary" (click)="displayService.lockOrientation('landscape')">
-    Lock Rotation landscape
-</button>
-<button type="button" class="btn btn-primary" (click)="displayService.lockOrientation('portrait')">
-    Lock Rotation portrait
-</button>
-<button type="button" class="btn btn-primary" (click)="displayService.unlockOrientation()">
-    Unlock Rotation
-</button>
-<div *ngFor="let _ of [].constructor(30)" class="bg-danger mt-2 m-safe-x w-100">
-    SAFE BOX
+<!-- <div class="p-2">
+    <div class="row">
+    <div class="col-12 col-md-5 col-xl-3">
+        <h3 class="text-center mb-3">Rooms</h3>
+        <div class="row">
+            <div class="col-sm-6 col-md-12 pe-sm-2 pe-md-0">
+                <div class="card mb-3 border-primary text-center">
+            <div class="card-body p-4">
+                <h5 class="card-title">Game Of Thrones</h5>
+                <h6 class="card-subtitle mb-2 text-muted">S3 | E6</h6>
+                <ul class="list-group rounded-2 py-3 mb-2 list-group-flush">
+                    <li class="list-group-item">Jakob</li>
+                    <li class="list-group-item">Florian</li>
+                    <li class="list-group-item">Lukas </li>
+                </ul>
+                <a href="#" class="card-link btn btn-primary w-100">Join</a>
+            </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-12 ps-sm-2 pe-md-0">
+                <div class="card mb-3 border-primary text-center">
+            <div class="card-body p-4">
+                <h5 class="card-title">Sekunden in Moll</h5>
+                <h6 class="card-subtitle mb-2 text-muted">S1 | E2</h6>
+                <ul class="list-group rounded-2 py-3 mb-2 list-group-flush">
+                    <li class="list-group-item">Rikk</li>
+                    <li class="list-group-item">Jarod</li>
+                </ul>
+                <a href="#" class="card-link btn btn-primary w-100">Join</a>
+            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-9 mb-3">
+        <h3 class="text-center mb-3">Last Watched</h3>
+            <div class="card text-white text-center bg-primary mb-3">
+                <div class="card-header">
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 25%; border-radius: 20px;"
+                            aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Chernobyl</h4>
+                    <p class="card-text">S1 | E1</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="d-block user-select-none" width="100%" height="200"
+                    aria-label="Placeholder: Image cap" focusable="false" role="img"
+                    preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180"
+                    style="font-size:1.125rem;text-anchor:middle">
+                    <rect width="100%" height="100%" fill="#868e96"></rect>
+                    <text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text>
+                </svg>
+            </div>
+            <div class="card text-white text-center bg-primary mb-3">
+                <div class="card-header">
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 55%; border-radius: 20px;"
+                            aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Chernobyl</h4>
+                    <p class="card-text">S1 | E1</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="d-block user-select-none" width="100%" height="200"
+                    aria-label="Placeholder: Image cap" focusable="false" role="img"
+                    preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180"
+                    style="font-size:1.125rem;text-anchor:middle">
+                    <rect width="100%" height="100%" fill="#868e96"></rect>
+                    <text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text>
+                </svg>
+            </div>
+    </div>
+    </div>
+</div> -->
+
+<div>
+    <div class="bg-blue-600 m-2 p-4 bg-gradient-to-b from-blue-400 to-blue-500 rounded-xl shadow-lg w-80 cursor-pointer hover:scale-95 duration-200">
+        <div class="flex justify-center">
+            <div class="flex justify-center p-4 mb-2 bg-blue-400 ring-2 ring-blue-300 rounded-lg shadow-xl w-full">
+                <svg class="h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+        </div>
+        <div class="">
+            <p class="text-white text-center font-semibold">Game of Thones</p>
+            <p class="text-white text-center">S2 | E4</p>
+            <div class="flex justify-between">
+                <p class="text-gray-200">56:42</p>
+                <p class="text-white">6.5GB</p>
+            </div>
+            <div class="w-full h-2 mt-2 bg-blue-200 rounded-full">
+                <div class="w-2/3 h-full text-center text-xs text-white bg-blue-600 rounded-full">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-blue-600 m-2 p-4 bg-gradient-to-b from-indigo-400 to-indigo-500 rounded-xl shadow-lg w-80 cursor-pointer hover:scale-95 duration-200">
+        <div class="flex justify-center">
+            <div class="flex justify-center p-4 bg-indigo-300 ring-2 ring-indigo-200 rounded-lg shadow-xl w-full">
+                <svg class="h-8 text-white" viewBox="0 0 256 256">
+                    <path d="M216.9,208H39.4a7.4,7.4,0,0,1-7.4-7.4V80H216a8,8,0,0,1,8,8V200.9A7.1,7.1,0,0,1,216.9,208Z"
+                        fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="24" />
+                    <path d="M98.4,46.7,128,80H32V52a8,8,0,0,1,8-8H92.4A8,8,0,0,1,98.4,46.7Z" fill="none" stroke="currentColor"
+                        stroke-linecap="round" stroke-linejoin="round" stroke-width="24" />
+                </svg>
+            </div>
+        </div>
+        <div class="mt-3">
+            <p class="text-white text-center font-semibold">Game of Thones</p>
+            <div class="flex justify-between mt-2">
+                <p class="text-gray-200">Series</p>
+                <p class="text-white">10 Seasons</p>
+            </div>
+        </div>
+    </div>
+    <div class="bg-blue-600 m-2 p-4 bg-gradient-to-b from-pink-400 to-pink-500 rounded-xl shadow-lg w-80 cursor-pointer hover:scale-95 duration-200">
+        <div class="flex justify-center">
+            <div class="flex justify-center p-4 bg-pink-300 ring-2 ring-pink-200 rounded-lg shadow-xl w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+        </div>
+        <div class="mt-3">
+            <p class="text-white font-semibold">sub</p>
+            <div class="flex justify-between mt-2">
+                <p class="text-gray-200">.vtt</p>
+                <p class="text-white">20 MB</p>
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,18 +1,9 @@
-<app-navbar-desktop
-    class="d-none d-sm-block"
-    *ngIf="authService.isLoggedIn()"
-    [navStartRoutes]="navStartRoutes"
-    [navEndRoutes]="navEndRoutes"
-    [logoutLoading]="logoutLoading"
-    (onLogout)="logout()"
-    (onGoOnline)="goOnline()">
-</app-navbar-desktop>
-<app-modal #modal></app-modal>
-<div>
+<div class="w-full h-full overflow-auto" [attr.data-theme]="'dark'">
+    <app-navbar-desktop class="hidden md:block" *ngIf="authService.isLoggedIn()" [navStartRoutes]="navStartRoutes"
+        [navEndRoutes]="navEndRoutes">
+    </app-navbar-desktop>
+    <app-modal #modal></app-modal>
     <router-outlet></router-outlet>
+    <app-navbar-mobile class="block md:hidden" *ngIf="authService.isLoggedIn()" [navMobileRoutes]="navMobileRoutes">
+    </app-navbar-mobile>
 </div>
-<app-navbar-mobile
-    class="d-block d-sm-none"
-    *ngIf="authService.isLoggedIn()"
-    [navMobileRoutes]="navMobileRoutes">
-</app-navbar-mobile>

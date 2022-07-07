@@ -3,7 +3,7 @@ import { Token } from "./token";
 
 export interface IAuthService {
 
-    login(username: string, password: string, stay_signedin: boolean): Observable<Token>;
+    login(username: string, password: string, staySignedin: boolean): Observable<Token>;
 
     logout(): Observable<any>;
 

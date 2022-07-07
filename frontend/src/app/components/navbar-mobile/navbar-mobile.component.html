@@ -1,9 +1,17 @@
-<nav class="fixed-bottom navbar navbar-expand px-3 py-2 navbar-dark bg-primary">
-    <div class="navbar w-100 h-100 m-safe-b m-safe-x">
-        <ul class="navbar-nav w-100 align-items-center justify-content-around">
-            <li class="nav-item" *ngFor="let route of navMobileRoutes">
-                <a [ngClass]="['emoji-' + route.emoji]" class="nav-link navbar-emoji" routerLinkActive="active" [routerLink]="route.path"></a>
-            </li>
-        </ul>
+<!-- <nav class="fixed bottom-0 w-full bg-gray-800">
+    <div class="m-safe-b m-safe-x h-12 flex items-center justify-around">
+        <a [ngClass]="['emoji-' + route.emoji]"
+            class="navbar-emoji text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+            *ngFor="let route of navMobileRoutes" routerLinkActive="bg-gray-900 text-white"
+            [routerLink]="route.path"></a>
     </div>
+</nav> -->
+<nav class="navbar bg-base-100 fixed bottom-0 w-full">
+    <ul class="menu menu-horizontal w-full justify-between">
+        <li *ngFor="let route of navMobileRoutes">
+            <a [routerLink]="route.path" [innerHTML]="route.emoji | bypassSanitize">
+                <!-- {{route.emoji}} -->
+            </a>
+        </li>
+    </ul>
 </nav>

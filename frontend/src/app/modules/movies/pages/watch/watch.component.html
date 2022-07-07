@@ -7,7 +7,7 @@
             <app-download-button [movieId]="movieId!"></app-download-button>
         </ng-container>
         <ng-template #noMovie>
-            <div class="alert alert-danger mt-2" role="alert">Movie not found</div>
+            <div class="alert alert-error mt-2" role="alert">Movie not found</div>
         </ng-template>
     </ng-container>
     <ng-template #loadingSpinner>

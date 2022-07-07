@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './shared/auth/auth.service';
@@ -32,6 +31,9 @@ import { FullscreenGuardService } from './shared/display/fullscreen-guard.servic
 import { NoFullscreenGuardService } from './shared/display/no-fullscreen-guard.service';
 import { NavbarDesktopComponent } from './components/navbar-desktop/navbar-desktop.component';
 import { NavbarMobileComponent } from './components/navbar-mobile/navbar-mobile.component';
+import { LogoutButtonComponent } from './components/logout-button/logout-button.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
+import { BypassSanitizePipe } from './shared/bypass-sanitize.pipe';
 
 @NgModule({
     declarations: [
@@ -44,6 +46,9 @@ import { NavbarMobileComponent } from './components/navbar-mobile/navbar-mobile.
         DownloadsComponent,
         NavbarDesktopComponent,
         NavbarMobileComponent,
+        LogoutButtonComponent,
+        LoadingSpinnerComponent,
+        BypassSanitizePipe,
     ],
     imports: [
         BrowserModule,
@@ -51,7 +56,6 @@ import { NavbarMobileComponent } from './components/navbar-mobile/navbar-mobile.
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
-        NgbModule,
         ServiceWorkerModule.register(serviceWorkerConfig.serviceWorkerUrl, {
             enabled: serviceWorkerConfig.enabled,
             // Register the ServiceWorker as soon as the application is stable
